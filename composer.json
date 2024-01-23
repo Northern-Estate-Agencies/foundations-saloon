@@ -17,7 +17,7 @@
     },
     "autoload": {
         "psr-4": {
-            "FoundationsSaloon\\": "src/"
+            "FoundationsSaloon\\": "src/FoundationsSaloon/"
         }
     },
     "minimum-stability": "stable",

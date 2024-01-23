@@ -3,7 +3,7 @@
 namespace FoundationsSaloon;
 
 use FoundationsSaloon\Requests\PostClientCredentialsRequest;
-use FoundationsSaloon\HasLogging;
+use FoundationsSaloon\Traits\HasLogging;
 use Saloon\Http\Request;
 use Saloon\Http\Response;
 use Saloon\Helpers\OAuth2\OAuthConfig;
