@@ -16,7 +16,7 @@ use Saloon\Traits\OAuth2\ClientCredentialsGrant;
 class FoundationsConnector extends Connector implements HasPagination
 {
     use ClientCredentialsGrant;
-    use HasLogging;
+    // use HasLogging;
 
     public ?int $tries = 1;
 
