@@ -76,8 +76,8 @@ class FoundationsConnector extends Connector implements HasPagination
 
     protected function defaultOauthConfig(): OAuthConfig
     {
-        $clientId = config('services.reapit.client_id');
-        $clientSecret = config('services.reapit.client_secret');
+        $clientId = config('services.reapit.client_id') ?? '';
+        $clientSecret = config('services.reapit.client_secret') ?? '';
 
         return OAuthConfig::make()
             ->setClientId($clientId)
