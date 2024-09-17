@@ -6,7 +6,7 @@ use Saloon\Enums\Method;
 use Saloon\Http\Request;
 use Saloon\PaginationPlugin\Contracts\Paginatable;
 
-class GetCertificateTypesRequest extends Request implements Paginatable
+class GetWorksOrderTypesRequest extends Request implements Paginatable
 {
     protected Method $method = Method::GET;
 
