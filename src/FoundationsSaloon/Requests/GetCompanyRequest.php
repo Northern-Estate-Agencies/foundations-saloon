@@ -5,7 +5,7 @@ namespace FoundationsSaloon\Requests;
 use Saloon\Enums\Method;
 use Saloon\Http\Request;
 
-class GetPropertyRequest extends Request
+class GetCompanyRequest extends Request
 {
     protected Method $method = Method::GET;
 

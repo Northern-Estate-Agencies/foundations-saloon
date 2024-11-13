@@ -6,7 +6,7 @@ use Saloon\Enums\Method;
 use Saloon\Http\Request;
 use Saloon\PaginationPlugin\Contracts\Paginatable;
 
-class GetPropertiesRequest extends Request implements Paginatable
+class GetCompaniesRequest extends Request implements Paginatable
 {
     protected Method $method = Method::GET;
 
