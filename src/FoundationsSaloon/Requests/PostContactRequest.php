@@ -20,7 +20,8 @@ class PostContactRequest extends Request implements HasBody
         protected string $mobilePhone,
         protected string $marketingConsent,
         protected bool $active,
-        protected array $officeIds
+        protected array $officeIds,
+        protected array $negotiatorIds
     ) {}
 
     public function resolveEndpoint(): string
@@ -39,6 +40,7 @@ class PostContactRequest extends Request implements HasBody
             'marketingConsent' => $this->marketingConsent,
             'active' => true,
             'officeIds' => $this->officeIds,
+            'negotiatorIds' => $this->negotiatorIds,
         ];
     }
 }
