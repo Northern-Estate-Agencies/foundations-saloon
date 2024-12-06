@@ -20,6 +20,9 @@ class PostApplicantRequest extends Request implements HasBody
     */
 
     public function __construct(
+        protected string $forename,
+        protected string $surname,
+        protected string $marketingConsent,
         protected string $marketingMode,
         protected string $relatedContactId,
         protected array $payload = [],
@@ -33,6 +36,9 @@ class PostApplicantRequest extends Request implements HasBody
     protected function defaultBody(): array
     {
         $baseDetailsArray = [
+            'forename' => $this->forename,
+            'surname' => $this->surname,
+            'marketingConsent' => $this->marketingConsent,
             'marketingMode' => $this->marketingMode,
             'related' => [
                 'associatedId' => $this->relatedContactId,
