@@ -18,6 +18,7 @@ class PostContactRequest extends Request implements HasBody
         protected string $surname,
         protected string $email,
         protected string $mobilePhone,
+        protected string $marketingConsent,
         protected bool $active,
         protected array $officeIds
     ) {}
@@ -35,6 +36,7 @@ class PostContactRequest extends Request implements HasBody
             'surname' => $this->surname,
             'email' => $this->email,
             'mobilePhone' => $this->mobilePhone,
+            'marketingConsent' => $this->marketingConsent,
             'active' => true,
             'officeIds' => $this->officeIds,
         ];
