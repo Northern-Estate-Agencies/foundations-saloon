@@ -30,15 +30,12 @@ class PostApplicantRequest extends Request implements HasBody
 
     public function resolveEndpoint(): string
     {
-        return '/contacts';
+        return '/applicant';
     }
 
     protected function defaultBody(): array
     {
         $baseDetailsArray = [
-            'forename' => $this->forename,
-            'surname' => $this->surname,
-            'marketingConsent' => $this->marketingConsent,
             'marketingMode' => $this->marketingMode,
             'related' => [
                 'associatedId' => $this->relatedContactId,
