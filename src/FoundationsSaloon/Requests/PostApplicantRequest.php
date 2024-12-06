@@ -30,7 +30,7 @@ class PostApplicantRequest extends Request implements HasBody
 
     public function resolveEndpoint(): string
     {
-        return '/applicant';
+        return '/applicants';
     }
 
     protected function defaultBody(): array
