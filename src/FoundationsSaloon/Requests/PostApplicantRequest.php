@@ -40,10 +40,10 @@ class PostApplicantRequest extends Request implements HasBody
             'officeIds' => $this->officeIds,
             'negotiatorIds' => $this->negotiatorIds,
             'departmentId' => $this->departmentId,
-            'related' => [
+            'related' => [[
                 'associatedId' => $this->relatedContactId,
                 'associatedType' => 'contact',
-            ]
+            ]]
         ];
 
         $applicantDetails = collect($this->payload)
