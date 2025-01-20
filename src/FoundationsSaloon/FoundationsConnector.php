@@ -15,6 +15,7 @@ use Saloon\Traits\OAuth2\ClientCredentialsGrant;
 use Illuminate\Support\Facades\Cache;
 use Saloon\RateLimitPlugin\Contracts\RateLimitStore;
 use Saloon\RateLimitPlugin\Stores\LaravelCacheStore;
+use Saloon\RateLimitPlugin\Stores\MemoryStore;
 
 class FoundationsConnector extends Connector implements HasPagination
 {
@@ -104,7 +105,7 @@ class FoundationsConnector extends Connector implements HasPagination
 
     protected function resolveRateLimitStore(): RateLimitStore
     {
-        return new LaravelCacheStore(Cache::store('redis'));
+        return new MemoryStore;
     }
 
     protected function resolveLimits(): array
