@@ -3,19 +3,23 @@
 namespace FoundationsSaloon;
 
 use FoundationsSaloon\Requests\PostClientCredentialsRequest;
-use FoundationsSaloon\Traits\HasLogging;
+use Saloon\RateLimitPlugin\Limit;
 use Saloon\Http\Request;
 use Saloon\Http\Response;
 use Saloon\Helpers\OAuth2\OAuthConfig;
 use Saloon\Http\Connector;
-use Saloon\Http\OAuth2\GetClientCredentialsTokenRequest;
 use Saloon\PaginationPlugin\Contracts\HasPagination;
 use Saloon\PaginationPlugin\PagedPaginator;
+use Saloon\RateLimitPlugin\Traits\HasRateLimits;
 use Saloon\Traits\OAuth2\ClientCredentialsGrant;
+use Illuminate\Support\Facades\Cache;
+use Saloon\RateLimitPlugin\Contracts\RateLimitStore;
+use Saloon\RateLimitPlugin\Stores\LaravelCacheStore;
 
 class FoundationsConnector extends Connector implements HasPagination
 {
     use ClientCredentialsGrant;
+    use HasRateLimits;
     // use HasLogging;
 
     public ?int $tries = 1;
@@ -95,6 +99,18 @@ class FoundationsConnector extends Connector implements HasPagination
             'Content-Type' => 'application/json',
             'Accept' => 'application/json',
             'api-version' => '2020-01-31'
+        ];
+    }
+
+    protected function resolveRateLimitStore(): RateLimitStore
+    {
+        return new LaravelCacheStore(Cache::store('redis'));
+    }
+
+    protected function resolveLimits(): array
+    {
+        return [
+            Limit::allow(60)->everySeconds(seconds: 1)->sleep(),
         ];
     }
 }

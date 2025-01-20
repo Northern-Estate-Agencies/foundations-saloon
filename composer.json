@@ -7,10 +7,10 @@
         "guzzlehttp/psr7": "^2.5",
         "guzzlehttp/guzzle": "^7.7",
         "saloonphp/saloon": "^3.0",
-        "saloonphp/pagination-plugin": "^2.0"
+        "saloonphp/pagination-plugin": "^2.0",
+        "saloonphp/rate-limit-plugin": "^2.0"
     },
     "require-dev": {
-        "laravel/sanctum": "^3.0",
         "laravel/pint": "^1.6",
         "pestphp/pest": "^2.6",
         "mockery/mockery": "^1.5"
