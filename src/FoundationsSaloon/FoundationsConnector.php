@@ -111,7 +111,7 @@ class FoundationsConnector extends Connector implements HasPagination
     protected function resolveLimits(): array
     {
         return [
-            Limit::allow(60)->everySeconds(seconds: 1)->sleep(),
+            Limit::allow(20)->everySeconds(seconds: 1)->sleep(),
         ];
     }
 }
