@@ -20,7 +20,7 @@ use Saloon\RateLimitPlugin\Stores\MemoryStore;
 class FoundationsConnector extends Connector implements HasPagination
 {
     use ClientCredentialsGrant;
-    use HasRateLimits;
+    // use HasRateLimits;
     // use HasLogging;
 
     public ?int $tries = 1;
@@ -103,6 +103,7 @@ class FoundationsConnector extends Connector implements HasPagination
         ];
     }
 
+    /*
     protected function resolveRateLimitStore(): RateLimitStore
     {
         return new MemoryStore;
@@ -114,4 +115,5 @@ class FoundationsConnector extends Connector implements HasPagination
             Limit::allow(20)->everySeconds(seconds: 1)->sleep(),
         ];
     }
+    */
 }
