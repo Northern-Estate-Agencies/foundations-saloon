@@ -12,15 +12,13 @@ use Saloon\PaginationPlugin\Contracts\HasPagination;
 use Saloon\PaginationPlugin\PagedPaginator;
 use Saloon\RateLimitPlugin\Traits\HasRateLimits;
 use Saloon\Traits\OAuth2\ClientCredentialsGrant;
-use Illuminate\Support\Facades\Cache;
 use Saloon\RateLimitPlugin\Contracts\RateLimitStore;
-use Saloon\RateLimitPlugin\Stores\LaravelCacheStore;
 use Saloon\RateLimitPlugin\Stores\MemoryStore;
 
 class FoundationsConnector extends Connector implements HasPagination
 {
     use ClientCredentialsGrant;
-    // use HasRateLimits;
+    use HasRateLimits;
     // use HasLogging;
 
     public ?int $tries = 1;
@@ -103,17 +101,17 @@ class FoundationsConnector extends Connector implements HasPagination
         ];
     }
 
-    /*
+
     protected function resolveRateLimitStore(): RateLimitStore
     {
-        return new MemoryStore;
+        return new MemoryStore();
     }
 
     protected function resolveLimits(): array
     {
         return [
-            Limit::allow(20)->everySeconds(seconds: 1)->sleep(),
+            Limit::allow(20)->everySeconds(1)->sleep(),
         ];
     }
-    */
+
 }
