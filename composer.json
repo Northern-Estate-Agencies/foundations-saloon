@@ -8,7 +8,8 @@
         "guzzlehttp/guzzle": "^7.7",
         "saloonphp/saloon": "^3.0",
         "saloonphp/pagination-plugin": "^2.0",
-        "saloonphp/rate-limit-plugin": "^2.0"
+        "saloonphp/rate-limit-plugin": "^2.0",
+        "predis/predis": "^2.3"
     },
     "require-dev": {
         "laravel/pint": "^1.6",

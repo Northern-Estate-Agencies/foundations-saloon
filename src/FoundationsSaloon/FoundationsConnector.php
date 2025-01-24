@@ -3,6 +3,7 @@
 namespace FoundationsSaloon;
 
 use FoundationsSaloon\Requests\PostClientCredentialsRequest;
+use Predis\Client;
 use Saloon\RateLimitPlugin\Limit;
 use Saloon\Http\Request;
 use Saloon\Http\Response;
@@ -14,6 +15,7 @@ use Saloon\RateLimitPlugin\Traits\HasRateLimits;
 use Saloon\Traits\OAuth2\ClientCredentialsGrant;
 use Saloon\RateLimitPlugin\Contracts\RateLimitStore;
 use Saloon\RateLimitPlugin\Stores\MemoryStore;
+use Saloon\RateLimitPlugin\Stores\PredisStore;
 
 class FoundationsConnector extends Connector implements HasPagination
 {
@@ -104,7 +106,18 @@ class FoundationsConnector extends Connector implements HasPagination
 
     protected function resolveRateLimitStore(): RateLimitStore
     {
-        return new MemoryStore();
+        if(config('app.env') === 'local') {
+            return new MemoryStore();
+        }
+
+        $predisClient = new Client([
+            'scheme' => 'tcp',
+            'host'   => config('database.redis.default.host'),
+            'port'   => config('database.redis.default.port'),
+            'password' => config('database.redis.default.password'),
+        ]);
+
+        return new PredisStore($predisClient);
     }
 
     protected function resolveLimits(): array
