@@ -17,7 +17,8 @@ class PostJournalEntriesRequest extends Request implements HasBody
         protected string $typeId,
         protected string $associatedType,
         protected string $associatedId,
-        protected string $description
+        protected string $description,
+        protected ?string $propertyId = null
     ) {}
 
     public function resolveEndpoint(): string
@@ -27,11 +28,18 @@ class PostJournalEntriesRequest extends Request implements HasBody
 
     protected function defaultBody(): array
     {
-        return [
+
+        $entryArray =  [
             'typeId' => $this->typeId,
             'associatedType' => $this->associatedType,
             'associatedId' => $this->associatedId,
             'description' => $this->description
         ];
+
+        if(isset($this->propertyId)){
+            $entryArray['propertyId'] = $this->propertyId;
+        }
+
+        return $entryArray;
     }
 }
