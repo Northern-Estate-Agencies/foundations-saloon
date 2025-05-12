@@ -79,6 +79,11 @@ class FoundationsConnector extends Connector implements HasPagination
         $clientId = config('services.reapit.client_id') ?? 'XYX';
         $clientSecret = config('services.reapit.client_secret') ?? 'XYX';
 
+        if($this->useUnsubFlowCredentials){           
+            $clientId = config('services.reapit.unsub_client_id') ?? 'XYX';
+            $clientSecret = config('services.reapit.unsub_client_secret') ?? 'XYX';
+        }
+
         return OAuthConfig::make()
             ->setClientId($clientId)
             ->setClientSecret($clientSecret);
