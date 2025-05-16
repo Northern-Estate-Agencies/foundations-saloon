@@ -36,6 +36,13 @@ class FoundationsConnector extends Connector implements HasPagination
     public function useUnsubFlowCredentials(bool $useUnsub = true): void
     {
         $this->useUnsubFlowCredentials = $useUnsub;
+
+        $clientId = config('services.reapit.unsub_client_id') ?? 'XYX';
+        $clientSecret = config('services.reapit.unsub_client_secret') ?? 'XYX';
+
+        $this->oauthConfig()->setClientId($clientId);
+        $this->oauthConfig()->setClientSecret($clientSecret);
+
     }
 
     public function paginate(Request $request): PagedPaginator
