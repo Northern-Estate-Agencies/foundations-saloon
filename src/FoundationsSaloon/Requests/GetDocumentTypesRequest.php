@@ -6,13 +6,13 @@ use Saloon\Enums\Method;
 use Saloon\Http\Request;
 use Saloon\PaginationPlugin\Contracts\Paginatable;
 
-class GetAppointmentsRequest extends Request implements Paginatable
+class GetDocumentTypesRequest extends Request implements Paginatable
 {
     protected Method $method = Method::GET;
 
     public function resolveEndpoint(): string
     {
-        return '/appointments';
+        return '/configuration/documentTypes';
     }
 
     protected function defaultQuery(): array
