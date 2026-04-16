@@ -6,7 +6,7 @@
         "fakerphp/faker": "^1.22",
         "guzzlehttp/psr7": "^2.5",
         "guzzlehttp/guzzle": "^7.7",
-        "saloonphp/saloon": "^3.0",
+        "saloonphp/saloon": "^4.0",
         "saloonphp/pagination-plugin": "^2.0",
         "saloonphp/rate-limit-plugin": "^2.0",
         "predis/predis": "^2.3"
