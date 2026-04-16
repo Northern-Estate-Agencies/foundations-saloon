@@ -98,7 +98,8 @@ class FoundationsConnector extends Connector implements HasPagination
 
         return OAuthConfig::make()
             ->setClientId($clientId)
-            ->setClientSecret($clientSecret);
+            ->setClientSecret($clientSecret)
+            ->setAllowBaseUrlOverride();
     }
 
     protected function resolveAccessTokenRequest(OAuthConfig $oauthConfig, array $scopes = [], string $scopeSeparator = ' '): Request
