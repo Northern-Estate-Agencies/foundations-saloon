@@ -15,6 +15,8 @@ class PostClientCredentialsRequest extends Request implements HasBody
 
     protected Method $method = Method::POST;
 
+    public ?bool $allowBaseUrlOverride = true;
+
     public function __construct(
         protected OAuthConfig $oauthConfig,
         protected array $scopes = [],
