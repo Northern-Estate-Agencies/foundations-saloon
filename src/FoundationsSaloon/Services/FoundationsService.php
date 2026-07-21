@@ -15,6 +15,11 @@ class FoundationsService
         $this->setUpAuthentication($connector);
     }
 
+    public function setReapitCustomer(string $customer): void
+    {
+        $this->connector->setReapitCustomer($customer);
+    }
+
     private function setUpAuthentication(?FoundationsConnector $connector = null): void
     {
         if ($connector === null) {
