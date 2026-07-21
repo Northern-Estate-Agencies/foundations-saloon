@@ -32,6 +32,7 @@ use FoundationsSaloon\Requests\GetTransactionsRequest;
 use FoundationsSaloon\Requests\GetVendorRequest;
 use FoundationsSaloon\Requests\GetVendorsRelationshipsRequest;
 use FoundationsSaloon\Requests\GetVendorsRequest;
+use FoundationsSaloon\Requests\GetWorksOrderRequest;
 use FoundationsSaloon\Requests\GetWorksOrdersRequest;
 use FoundationsSaloon\Requests\PostJournalEntriesRequest;
 use FoundationsSaloon\Requests\UpdateApplicantRequest;
@@ -655,6 +656,17 @@ class FoundationsService
         }
 
         return $this->getPaginatedResults($worksOrdersRequest);
+    }
+
+    public function getWorksOrder(string $worksOrderRpsId, array $queryParameters = []): ?array
+    {
+        $getWorksOrderRequest = new GetWorksOrderRequest($worksOrderRpsId);
+
+        foreach ($queryParameters as $key => $value) {
+            $getWorksOrderRequest->query()->add($key, $value);
+        }
+
+        return $this->getSingleResult($getWorksOrderRequest);
     }
 
     /**
