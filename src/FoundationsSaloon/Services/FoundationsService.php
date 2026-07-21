@@ -16,6 +16,7 @@ use FoundationsSaloon\Requests\GetLandlordsRequest;
 use FoundationsSaloon\Requests\GetNegotiatorRequest;
 use FoundationsSaloon\Requests\GetOfficesRequest;
 use FoundationsSaloon\Requests\GetPropertiesRequest;
+use FoundationsSaloon\Requests\GetPropertyCertificatesRequest;
 use FoundationsSaloon\Requests\GetPropertyRequest;
 use FoundationsSaloon\Requests\GetTenanciesRequest;
 use FoundationsSaloon\Requests\GetTenancyChecksRequest;
@@ -581,6 +582,17 @@ class FoundationsService
         $property = json_decode($response->body(), true) ?? null;
 
         return $property;
+    }
+
+    public function getPropertyCertificates(string $propertyId, array $queryParameters = []): ?array
+    {
+        $propertyCertificatesRequest = new GetPropertyCertificatesRequest($propertyId);
+
+        foreach ($queryParameters as $key => $value) {
+            $propertyCertificatesRequest->query()->add($key, $value);
+        }
+
+        return $this->getPaginatedResults($propertyCertificatesRequest);
     }
 
     /**
