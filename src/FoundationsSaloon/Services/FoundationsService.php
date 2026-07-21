@@ -1,10 +1,12 @@
 <?php
 
+use App\Saloon\Foundations\Requests\UpdatePropertyRequest;
 use FoundationsSaloon\FoundationsConnector;
 use FoundationsSaloon\Requests\GetAreasRequest;
 use FoundationsSaloon\Requests\GetCompaniesRequest;
 use FoundationsSaloon\Requests\GetContactsRequest;
 use FoundationsSaloon\Requests\GetJournalEntriesRequest;
+use FoundationsSaloon\Requests\GetPropertiesRequest;
 use FoundationsSaloon\Requests\PostJournalEntriesRequest;
 use FoundationsSaloon\Requests\UpdateCompanyRequest;
 use FoundationsSaloon\Requests\UpdateContactRequest;
@@ -255,6 +257,52 @@ class FoundationsService
         }
 
         $updateRequest = new UpdateCompanyRequest($companyRpsId, $etag);
+
+        foreach ($changes as $key => $value) {
+            $updateRequest->body()->add($key, $value);
+        }
+
+        $response = $this->connector->send($updateRequest);
+
+        if (! $response->successful()) {
+            $this->handleRequestFail($updateRequest, $response);
+        }
+
+        return $response->successful();
+    }
+
+    /**
+     * @param  array<string,string>  $changes
+     */
+    public function updateProperty(string $propertyRpsId, array $changes): bool
+    {
+        $propertyRequest = new GetPropertiesRequest();
+        $propertyRequest->query()->add('id', $propertyRpsId);
+
+        $response = $this->connector->send($propertyRequest);
+
+        if (! $response->successful()) {
+            $this->handleRequestFail($propertyRequest, $response);
+            return false;
+        }
+
+        /** @var array<array<string,string>> $embeddedData */
+        $embeddedData = $response->collect()->get('_embedded');
+        $propertyData = collect($embeddedData)->first();
+
+        if (!$propertyData) {
+            Log::error('Could not get a property', ['propertyRpsId' => $propertyRpsId]);
+
+            return false;
+        }
+
+        $etag = $propertyData['_eTag'] ?? null;
+        if (! isset($etag)) {
+            Log::error('Could not find etag for property', ['propertyData' => $propertyData]);
+            return false;
+        }
+
+        $updateRequest = new UpdatePropertyRequest($propertyRpsId, $etag);
 
         foreach ($changes as $key => $value) {
             $updateRequest->body()->add($key, $value);
