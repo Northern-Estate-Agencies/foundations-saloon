@@ -2,6 +2,8 @@
 
 use App\Saloon\Foundations\Requests\UpdatePropertyRequest;
 use FoundationsSaloon\FoundationsConnector;
+use FoundationsSaloon\Requests\GetApplicantRequest;
+use FoundationsSaloon\Requests\GetApplicantsRequest;
 use FoundationsSaloon\Requests\GetAreaRequest;
 use FoundationsSaloon\Requests\GetAreasRequest;
 use FoundationsSaloon\Requests\GetCompaniesRequest;
@@ -619,6 +621,56 @@ class FoundationsService
         }
 
         return $this->getPaginatedResults($officesRequest);
+    }
+
+    /**
+     * @param  array<string,string|int|array<string>>  $queryParameters
+     * @return ?array<array<string,string|array<string>>>
+     */
+    public function getApplicants(array $queryParameters = []): ?array
+    {
+        $applicantsRequest = new GetApplicantsRequest();
+
+        foreach ($queryParameters as $key => $value) {
+            $applicantsRequest->query()->add($key, $value);
+        }
+
+        $response = $this->connector->send($applicantsRequest);
+
+        if (! $response->successful()) {
+            $this->handleRequestFail($applicantsRequest, $response);
+            return null;
+        }
+
+        /** @var ?array<array<string,string|array<string>>> $applicants */
+        $applicants = json_decode($response->body(), true) ?? null;
+
+        return $applicants;
+    }
+
+    /**
+     * @param  array<string,string|int>  $queryParameters
+     * @return ?array<array<string,string|array<string>>>
+     */
+    public function getApplicant(string $applicantId, array $queryParameters = []): ?array
+    {
+        $applicantRequest = new GetApplicantRequest($applicantId);
+
+        foreach ($queryParameters as $key => $value) {
+            $applicantRequest->query()->add($key, $value);
+        }
+
+        $response = $this->connector->send($applicantRequest);
+
+        if (! $response->successful()) {
+            $this->handleRequestFail($applicantRequest, $response);
+            return null;
+        }
+
+        /** @var ?array<array<string,string|array<string>>> $applicant */
+        $applicant = json_decode($response->body(), true) ?? null;
+
+        return $applicant;
     }
 
     /** @return ?array<array<string,string|array<string>>> $results */
