@@ -491,6 +491,21 @@ class FoundationsService
         return $properties;
     }
 
+    /**
+     * @param  array<string,string|int,array<string>> $queryParameters
+     * @return ?array<array<string,string|array<string>>>
+     */
+    public function getPropertiesPaged(array $queryParameters = []): ?array
+    {
+        $propertiesRequest = new GetPropertiesRequest();
+
+        foreach ($queryParameters as $key => $value) {
+            $propertiesRequest->query()->add($key, $value);
+        }
+
+        return $this->getPaginatedResults($propertiesRequest);
+    }
+
     /** @return ?array<array<string,string|array<string>>> $results */
     private function getPaginatedResults(Request $request): ?array
     {
