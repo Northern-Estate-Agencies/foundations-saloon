@@ -29,6 +29,15 @@ class FoundationsService
         $this->setUpAuthentication($connector);
     }
 
+    public function useJournalEntryAppCredentials(): void
+    {
+        $connector = new FoundationsConnector(
+            useJournalEntryAppCredentials: true
+        );
+
+        $this->setUpAuthentication($connector);
+    }
+
     private function setUpAuthentication(?FoundationsConnector $connector = null): void
     {
         if ($connector === null) {
