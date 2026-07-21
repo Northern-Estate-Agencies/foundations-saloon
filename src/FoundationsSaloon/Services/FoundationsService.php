@@ -2,6 +2,7 @@
 
 use FoundationsSaloon\FoundationsConnector;
 use FoundationsSaloon\Requests\GetAreasRequest;
+use FoundationsSaloon\Requests\GetCompaniesRequest;
 use FoundationsSaloon\Requests\GetContactsRequest;
 use FoundationsSaloon\Requests\GetJournalEntriesRequest;
 use FoundationsSaloon\Requests\PostJournalEntriesRequest;
@@ -206,6 +207,17 @@ class FoundationsService
         }
 
         return $response->successful();
+    }
+
+    public function getCompanies(array $queryParameters = []): ?array
+    {
+        $companiesRequest = new GetCompaniesRequest;
+
+        foreach ($queryParameters as $key => $value) {
+            $companiesRequest->query()->add($key, $value);
+        }
+
+        return $this->getPaginatedResults($companiesRequest);
     }
 
     /** @return ?array<array<string,string|array<string>>> $results */
