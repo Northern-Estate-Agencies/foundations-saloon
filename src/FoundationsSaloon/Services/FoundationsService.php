@@ -10,6 +10,7 @@ use FoundationsSaloon\Requests\GetCertificateTypesRequest;
 use FoundationsSaloon\Requests\GetCompaniesRequest;
 use FoundationsSaloon\Requests\GetCompanyRequest;
 use FoundationsSaloon\Requests\GetContactsRequest;
+use FoundationsSaloon\Requests\GetDocumentDownloadRequest;
 use FoundationsSaloon\Requests\GetDocumentRequest;
 use FoundationsSaloon\Requests\GetDocumentsRequest;
 use FoundationsSaloon\Requests\GetJournalEntriesRequest;
@@ -34,6 +35,7 @@ use FoundationsSaloon\Requests\UpdateApplicantRequest;
 use FoundationsSaloon\Requests\UpdateCompanyRequest;
 use FoundationsSaloon\Requests\UpdateContactRequest;
 use Illuminate\Support\Facades\Log;
+use Saloon\Exceptions\Request\Statuses\NotFoundException;
 use Saloon\Http\Auth\AccessTokenAuthenticator;
 use Saloon\Http\Request;
 use Saloon\Http\Response;
@@ -652,6 +654,24 @@ class FoundationsService
         return json_decode($response->body(), true);
     }
 
+    public function getDocumentDownload(string $documentId): ?string
+    {
+        $documentDownloadRequest = new GetDocumentDownloadRequest($documentId);
+
+        try {
+            $response = $this->connector->send($documentDownloadRequest);
+        } catch (NotFoundException $e) {
+            return null;
+        }
+
+        if (! $response->successful()) {
+            $this->handleRequestFail($documentDownloadRequest, $response);
+            return null;
+        }
+
+        return $response->body();
+    }
+
     /**
      * @param array<string,string|int> $queryParameters
      * @return ?array<array<string,string|array<string>>>
@@ -930,23 +950,11 @@ class FoundationsService
     {
         $landlordRequest = new GetLandlordRequest($ownerRpsId);
 
-        $landlordRequest->query()->add('id', $ownerRpsId);
-
         foreach ($queryParameters as $key => $value) {
             $landlordRequest->query()->add($key, $value);
         }
 
-        $response = $this->connector->send($landlordRequest);
-
-        if (! $response->successful()) {
-            $this->handleRequestFail($landlordRequest, $response);
-            return null;
-        }
-
-        /** @var ?array<array<string,string|array<string>>> $landlord */
-        $landlord = json_decode($response->body(), true) ?? null;
-
-        return $landlord;
+        return $this->getSingleResult($landlordRequest);
     }
 
     public function doesContactConsentToMarketing(string $contactRpsId): bool
@@ -965,6 +973,26 @@ class FoundationsService
         $marketingConsent = $reapitContactRecord['marketingConsent'] ?? 'deny';
 
         return in_array($marketingConsent, ['given', 'grant']);
+    }
+
+    protected function logConnection(Request $request): void
+    {
+        // stub
+    }
+
+    private function getSingleResult(Request $request): ?array
+    {
+        $response = $this->connector->send($request);
+
+        if (! $response->successful()) {
+            $this->handleRequestFail($request, $response);
+            return null;
+        }
+
+        /** @var ?array<array<string,string|array<string>>> $responseDecoded */
+        $responseDecoded = json_decode($response->body(), true) ?? null;
+
+        return $responseDecoded;
     }
 
     /** @return ?array<array<string,string|array<string>>> $results */
