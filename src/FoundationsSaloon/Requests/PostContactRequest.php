@@ -14,6 +14,7 @@ class PostContactRequest extends Request implements HasBody
     protected Method $method = Method::POST;
 
     public function __construct(
+        protected string $title,
         protected string $forename,
         protected string $surname,
         protected string $email,
@@ -32,8 +33,8 @@ class PostContactRequest extends Request implements HasBody
     protected function defaultBody(): array
     {
         return [
+            'title' => $this->title,
             'forename' => $this->forename,
-            'surname' => $this->surname,
             'surname' => $this->surname,
             'email' => $this->email,
             'mobilePhone' => $this->mobilePhone,

@@ -41,6 +41,7 @@ use FoundationsSaloon\Requests\GetVendorsRequest;
 use FoundationsSaloon\Requests\GetWorksOrderRequest;
 use FoundationsSaloon\Requests\GetWorksOrdersRequest;
 use FoundationsSaloon\Requests\GetWorksOrderTypesRequest;
+use FoundationsSaloon\Requests\PostContactRequest;
 use FoundationsSaloon\Requests\PostJournalEntriesRequest;
 use FoundationsSaloon\Requests\UpdateApplicantRequest;
 use FoundationsSaloon\Requests\UpdateCompanyRequest;
@@ -1034,6 +1035,58 @@ class FoundationsService
         $marketingConsent = $reapitContactRecord['marketingConsent'] ?? 'deny';
 
         return in_array($marketingConsent, ['given', 'grant']);
+    }
+
+    /**
+     * Create a new contact.
+     *
+     * @param  string  $title  The title of the contact.
+     * @param  string  $forename  The forename of the contact.
+     * @param  string  $surname  The surname of the contact.
+     * @param  string  $email  The email address of the contact.
+     * @param  string  $mobilePhone  The mobile phone number of the contact.
+     * @param  string  $marketingConsent  The marketing consent status of the contact.
+     * @param  bool  $active  The active status of the contact.
+     * @param  array  $officeIds  The IDs of the offices associated with the contact.
+     * @param  array  $negotiatorIds  The IDs of the negotiators associated with the contact.
+     * @return array|null The created contact details or null if the creation failed.
+     */
+    public function createContact(
+        string $title,
+        string $forename,
+        string $surname,
+        string $email,
+        string $mobilePhone,
+        string $marketingConsent,
+        bool $active,
+        array $officeIds,
+        array $negotiatorIds
+    ): ?array {
+
+        $createContactRequest = new PostContactRequest(
+            title: $title,
+            forename: $forename,
+            surname: $surname,
+            email: $email,
+            mobilePhone: $mobilePhone,
+            marketingConsent: $marketingConsent,
+            active: $active,
+            officeIds: $officeIds,
+            negotiatorIds: $negotiatorIds
+        );
+
+        $response = $this->connector->send($createContactRequest);
+
+        if (! $response->successful()) {
+
+            $this->handleRequestFail($createContactRequest, $response);
+
+            return null;
+        }
+
+        $contacts = $this->getContacts(['email' => $email]);
+
+        return collect($contacts)->first();
     }
 
     protected function logConnection(Request $request): void
