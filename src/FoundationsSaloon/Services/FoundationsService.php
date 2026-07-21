@@ -430,6 +430,42 @@ class FoundationsService
         return $propertyOwner;
     }
 
+    /**
+     * @param  array<string,string|int>  $queryParameters
+     * @return ?array<array<string,string|array<string>>>
+     */
+    public function getContacts(array $queryParameters = []): ?array
+    {
+        $contactRequest = new GetContactsRequest();
+
+        foreach ($queryParameters as $key => $value) {
+            $contactRequest->query()->add($key, $value);
+        }
+
+        $response = $this->connector->send($contactRequest);
+
+        if (! $response->successful()) {
+            $this->handleRequestFail($contactRequest, $response);
+            return null;
+        }
+
+        /** @var ?array<array<string,string|array<string>>> $contacts */
+        $contacts = json_decode($response->body(), true) ?? null;
+
+        return $contacts;
+    }
+
+    public function getContactsPaged(array $queryParameters = []): ?array
+    {
+        $contactRequest = new GetContactsRequest();
+
+        foreach ($queryParameters as $key => $value) {
+            $contactRequest->query()->add($key, $value);
+        }
+
+        return $this->getPaginatedResults($contactRequest);
+    }
+
     /** @return ?array<array<string,string|array<string>>> $results */
     private function getPaginatedResults(Request $request): ?array
     {
