@@ -20,6 +20,7 @@ use FoundationsSaloon\Requests\GetPropertyRequest;
 use FoundationsSaloon\Requests\GetTenanciesRequest;
 use FoundationsSaloon\Requests\GetTenancyChecksRequest;
 use FoundationsSaloon\Requests\GetTenancyRequest;
+use FoundationsSaloon\Requests\GetTransactionsRequest;
 use FoundationsSaloon\Requests\GetVendorRequest;
 use FoundationsSaloon\Requests\GetVendorsRelationshipsRequest;
 use FoundationsSaloon\Requests\GetVendorsRequest;
@@ -716,6 +717,17 @@ class FoundationsService
         $applicant = json_decode($response->body(), true) ?? null;
 
         return $applicant;
+    }
+
+    public function getTransactions(array $queryParameters = []): ?array
+    {
+        $transactionsRequest = new GetTransactionsRequest;
+
+        foreach ($queryParameters as $key => $value) {
+            $transactionsRequest->query()->add($key, $value);
+        }
+
+        return $this->getPaginatedResults($transactionsRequest);
     }
 
     /**
