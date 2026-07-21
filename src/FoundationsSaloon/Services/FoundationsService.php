@@ -739,6 +739,31 @@ class FoundationsService
         return $tenancies;
     }
 
+    /**
+     * @param  array<string,string|int>  $queryParameters
+     * @return ?array<array<string,string|array<string>>>
+     */
+    public function getVendors(array $queryParameters = []): ?array
+    {
+        $vendorsRequest = new GetVendorsRequest();
+
+        foreach ($queryParameters as $key => $value) {
+            $vendorsRequest->query()->add($key, $value);
+        }
+
+        $response = $this->connector->send($vendorsRequest);
+
+        if (! $response->successful()) {
+            $this->handleRequestFail($vendorsRequest, $response);
+            return null;
+        }
+
+        /** @var ?array<array<string,string|array<string>>> $vendors */
+        $vendors = json_decode($response->body(), true) ?? null;
+
+        return $vendors;
+    }
+
     /** @return ?array<array<string,string|array<string>>> $results */
     private function getPaginatedResults(Request $request): ?array
     {
