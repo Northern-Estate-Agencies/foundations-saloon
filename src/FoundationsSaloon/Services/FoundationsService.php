@@ -4,6 +4,7 @@ use App\Saloon\Foundations\Requests\UpdatePropertyRequest;
 use FoundationsSaloon\FoundationsConnector;
 use FoundationsSaloon\Requests\GetApplicantRequest;
 use FoundationsSaloon\Requests\GetApplicantsRequest;
+use FoundationsSaloon\Requests\GetAppointmentsRequest;
 use FoundationsSaloon\Requests\GetAreaRequest;
 use FoundationsSaloon\Requests\GetAreasRequest;
 use FoundationsSaloon\Requests\GetCertificateTypesRequest;
@@ -631,6 +632,17 @@ class FoundationsService
         }
 
         return $response->body();
+    }
+
+    public function getAppointments(array $queryParameters = []): ?array
+    {
+        $appointmentsRequest = new GetAppointmentsRequest;
+
+        foreach ($queryParameters as $key => $value) {
+            $appointmentsRequest->query()->add($key, $value);
+        }
+
+        return $this->getPaginatedResults($appointmentsRequest);
     }
 
     /**
