@@ -16,6 +16,7 @@ use FoundationsSaloon\Requests\GetNegotiatorRequest;
 use FoundationsSaloon\Requests\GetOfficesRequest;
 use FoundationsSaloon\Requests\GetPropertiesRequest;
 use FoundationsSaloon\Requests\GetPropertyRequest;
+use FoundationsSaloon\Requests\GetTenanciesRequest;
 use FoundationsSaloon\Requests\GetVendorsRelationshipsRequest;
 use FoundationsSaloon\Requests\GetVendorsRequest;
 use FoundationsSaloon\Requests\PostJournalEntriesRequest;
@@ -711,6 +712,31 @@ class FoundationsService
         }
 
         return $response->successful();
+    }
+
+    /**
+     * @param  array<string,string|int>  $queryParameters
+     * @return ?array<array<string,string|array<string>>>
+     */
+    public function getTenancies(array $queryParameters = []): ?array
+    {
+        $tenanciesRequest = new GetTenanciesRequest();
+
+        foreach ($queryParameters as $key => $value) {
+            $tenanciesRequest->query()->add($key, $value);
+        }
+
+        $response = $this->connector->send($tenanciesRequest);
+
+        if (! $response->successful()) {
+            $this->handleRequestFail($tenanciesRequest, $response);
+            return null;
+        }
+
+        /** @var ?array<array<string,string|array<string>>> $tenancies */
+        $tenancies = json_decode($response->body(), true) ?? null;
+
+        return $tenancies;
     }
 
     /** @return ?array<array<string,string|array<string>>> $results */
