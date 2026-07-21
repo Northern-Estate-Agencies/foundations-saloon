@@ -10,6 +10,8 @@ use FoundationsSaloon\Requests\GetCertificateTypesRequest;
 use FoundationsSaloon\Requests\GetCompaniesRequest;
 use FoundationsSaloon\Requests\GetCompanyRequest;
 use FoundationsSaloon\Requests\GetContactsRequest;
+use FoundationsSaloon\Requests\GetDocumentRequest;
+use FoundationsSaloon\Requests\GetDocumentsRequest;
 use FoundationsSaloon\Requests\GetJournalEntriesRequest;
 use FoundationsSaloon\Requests\GetLandlordRequest;
 use FoundationsSaloon\Requests\GetLandlordsRelationshipsRequest;
@@ -619,6 +621,35 @@ class FoundationsService
         }
 
         return json_decode($response->body(), true) ?? null;
+    }
+
+    public function getDocuments(array $queryParameters = []): ?array
+    {
+        $documentsRequest = new GetDocumentsRequest;
+
+        foreach ($queryParameters as $key => $value) {
+            $documentsRequest->query()->add($key, $value);
+        }
+
+        return $this->getPaginatedResults($documentsRequest);
+    }
+
+    public function getDocument(string $documentRpsId, array $queryParameters = []): ?array
+    {
+        $documentRequest = new GetDocumentRequest($documentRpsId);
+
+        foreach ($queryParameters as $key => $value) {
+            $documentRequest->query()->add($key, $value);
+        }
+
+        $response = $this->connector->send($documentRequest);
+
+        if (! $response->successful()) {
+            $this->handleRequestFail($documentRequest, $response);
+            return null;
+        }
+
+        return json_decode($response->body(), true);
     }
 
     /**
