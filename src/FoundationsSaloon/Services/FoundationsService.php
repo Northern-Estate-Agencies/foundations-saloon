@@ -11,6 +11,7 @@ use FoundationsSaloon\Requests\GetJournalEntriesRequest;
 use FoundationsSaloon\Requests\GetLandlordsRelationshipsRequest;
 use FoundationsSaloon\Requests\GetLandlordsRequest;
 use FoundationsSaloon\Requests\GetNegotiatorRequest;
+use FoundationsSaloon\Requests\GetOfficesRequest;
 use FoundationsSaloon\Requests\GetPropertiesRequest;
 use FoundationsSaloon\Requests\GetPropertyRequest;
 use FoundationsSaloon\Requests\GetVendorsRelationshipsRequest;
@@ -582,6 +583,31 @@ class FoundationsService
         $property = json_decode($response->body(), true) ?? null;
 
         return $property;
+    }
+
+    /**
+     * @param  array<string,string|int>  $queryParameters
+     * @return ?array<array<string,string|array<string>>>
+     */
+    public function getOffices(array $queryParameters = []): ?array
+    {
+        $officesRequest = new GetOfficesRequest();
+
+        foreach ($queryParameters as $key => $value) {
+            $officesRequest->query()->add($key, $value);
+        }
+
+        $response = $this->connector->send($officesRequest);
+
+        if (! $response->successful()) {
+            $this->handleRequestFail($officesRequest, $response);
+            return null;
+        }
+
+        /** @var ?array<array<string,string|array<string>>> $offices */
+        $offices = json_decode($response->body(), true) ?? null;
+
+        return $offices;
     }
 
     /** @return ?array<array<string,string|array<string>>> $results */
