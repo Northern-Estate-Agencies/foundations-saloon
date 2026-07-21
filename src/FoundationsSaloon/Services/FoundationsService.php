@@ -22,6 +22,7 @@ use FoundationsSaloon\Requests\GetLandlordRequest;
 use FoundationsSaloon\Requests\GetLandlordsRelationshipsRequest;
 use FoundationsSaloon\Requests\GetLandlordsRequest;
 use FoundationsSaloon\Requests\GetNegotiatorRequest;
+use FoundationsSaloon\Requests\GetOffersRequest;
 use FoundationsSaloon\Requests\GetOfficesRequest;
 use FoundationsSaloon\Requests\GetPropertiesRequest;
 use FoundationsSaloon\Requests\GetPropertyCertificatesRequest;
@@ -731,6 +732,17 @@ class FoundationsService
         $appointmentTypesRequest = new GetAppointmentTypesRequest;
 
         return $this->getSingleResult($appointmentTypesRequest);
+    }
+
+    public function getOffers(array $queryParameters = []): ?array
+    {
+        $offersRequest = new GetOffersRequest;
+
+        foreach ($queryParameters as $key => $value) {
+            $offersRequest->query()->add($key, $value);
+        }
+
+        return $this->getPaginatedResults($offersRequest);
     }
 
     /**
