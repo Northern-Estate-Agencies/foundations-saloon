@@ -1,5 +1,6 @@
 <?php
 
+use App\Saloon\Foundations\Requests\GetBuyingPositionsRequest;
 use App\Saloon\Foundations\Requests\UpdatePropertyRequest;
 use FoundationsSaloon\FoundationsConnector;
 use FoundationsSaloon\Requests\GetApplicantRequest;
@@ -715,6 +716,13 @@ class FoundationsService
         $worksOrderTypesRequest = new GetWorksOrderTypesRequest;
 
         return $this->getSingleResult($worksOrderTypesRequest);
+    }
+
+    public function getBuyingPositions(): ?array
+    {
+        $buyingPositionsRequest = new GetBuyingPositionsRequest();
+
+        return $this->getSingleResult($buyingPositionsRequest);
     }
 
     /**

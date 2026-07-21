@@ -1,0 +1,24 @@
+<?php
+
+namespace App\Saloon\Foundations\Requests;
+
+use Saloon\Enums\Method;
+use Saloon\Http\Request;
+use Saloon\PaginationPlugin\Contracts\Paginatable;
+
+class GetBuyingPositionsRequest extends Request implements Paginatable
+{
+    protected Method $method = Method::GET;
+
+    public function resolveEndpoint(): string
+    {
+        return '/configuration/buyingPositions';
+    }
+
+    protected function defaultQuery(): array
+    {
+        return [
+            'per_page' => 100
+        ];
+    }
+}
