@@ -2,6 +2,7 @@
 
 use App\Saloon\Foundations\Requests\GetBuyingPositionsRequest;
 use App\Saloon\Foundations\Requests\GetPropertyMarketingDataRequest;
+use App\Saloon\Foundations\Requests\UpdateAppointmentRequest;
 use App\Saloon\Foundations\Requests\UpdatePropertyRequest;
 use FoundationsSaloon\FoundationsConnector;
 use FoundationsSaloon\Requests\GetApplicantRequest;
@@ -216,6 +217,42 @@ class FoundationsService
 
         $response = $this->connector->send($updateRequest);
 
+        if (! $response->successful()) {
+            $this->handleRequestFail($updateRequest, $response);
+        }
+
+        return $response->successful();
+    }
+
+    /**
+     * @param  array<string,string>  $changes
+     */
+    public function updateAppointment(string $appointmentId, array $changes): bool
+    {
+        $appointmentRequest = new GetAppointmentRequest($appointmentId);
+
+        $response = $this->connector->send($appointmentRequest);
+
+        if (! $response->successful()) {
+            $this->handleRequestFail($appointmentRequest, $response);
+            return false;
+        }
+
+        /** @var array<string,string> $appointmentData */
+        $appointmentData = $response->array();
+        $etag = $appointmentData['_eTag'] ?? null;
+
+        if (! isset($etag)) {
+            Log::error('Could not find etag for contact', ['contactData' => $appointmentData]);
+            return false;
+        }
+
+        $updateRequest = new UpdateAppointmentRequest($appointmentId, $etag);
+        foreach ($changes as $key => $value) {
+            $updateRequest->body()->add($key, $value);
+        }
+
+        $response = $this->connector->send($updateRequest);
         if (! $response->successful()) {
             $this->handleRequestFail($updateRequest, $response);
         }
