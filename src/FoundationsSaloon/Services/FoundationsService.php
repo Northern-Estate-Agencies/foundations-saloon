@@ -17,6 +17,7 @@ use FoundationsSaloon\Requests\GetOfficesRequest;
 use FoundationsSaloon\Requests\GetPropertiesRequest;
 use FoundationsSaloon\Requests\GetPropertyRequest;
 use FoundationsSaloon\Requests\GetTenanciesRequest;
+use FoundationsSaloon\Requests\GetVendorRequest;
 use FoundationsSaloon\Requests\GetVendorsRelationshipsRequest;
 use FoundationsSaloon\Requests\GetVendorsRequest;
 use FoundationsSaloon\Requests\PostJournalEntriesRequest;
@@ -762,6 +763,29 @@ class FoundationsService
         $vendors = json_decode($response->body(), true) ?? null;
 
         return $vendors;
+    }
+
+    public function getVendor(string $ownerRpsId, array $queryParameters = []): ?array
+    {
+        $vendorRequest = new GetVendorRequest($ownerRpsId);
+
+        $vendorRequest->query()->add('id', $ownerRpsId);
+
+        foreach ($queryParameters as $key => $value) {
+            $vendorRequest->query()->add($key, $value);
+        }
+
+        $response = $this->connector->send($vendorRequest);
+
+        if (! $response->successful()) {
+            $this->handleRequestFail($vendorRequest, $response);
+            return null;
+        }
+
+        /** @var ?array<array<string,string|array<string>>> $vendor */
+        $vendor = json_decode($response->body(), true) ?? null;
+
+        return $vendor;
     }
 
     /**
