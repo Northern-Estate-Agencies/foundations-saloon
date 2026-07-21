@@ -18,6 +18,7 @@ use FoundationsSaloon\Requests\GetOfficesRequest;
 use FoundationsSaloon\Requests\GetPropertiesRequest;
 use FoundationsSaloon\Requests\GetPropertyRequest;
 use FoundationsSaloon\Requests\GetTenanciesRequest;
+use FoundationsSaloon\Requests\GetTenancyChecksRequest;
 use FoundationsSaloon\Requests\GetTenancyRequest;
 use FoundationsSaloon\Requests\GetVendorRequest;
 use FoundationsSaloon\Requests\GetVendorsRelationshipsRequest;
@@ -758,6 +759,17 @@ class FoundationsService
         }
 
         return json_decode($response->body(), true);
+    }
+
+    public function getTenancyChecks(string $tenancyId, array $queryParameters = []): ?array
+    {
+        $tenancyChecksRequest = new GetTenancyChecksRequest($tenancyId);
+
+        foreach ($queryParameters as $key => $value) {
+            $tenancyChecksRequest->query()->add($key, $value);
+        }
+
+        return $this->getPaginatedResults($tenancyChecksRequest);
     }
 
     /**
