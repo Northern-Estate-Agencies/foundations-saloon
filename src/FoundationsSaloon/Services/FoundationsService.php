@@ -6,6 +6,7 @@ use FoundationsSaloon\Requests\GetApplicantRequest;
 use FoundationsSaloon\Requests\GetApplicantsRequest;
 use FoundationsSaloon\Requests\GetAreaRequest;
 use FoundationsSaloon\Requests\GetAreasRequest;
+use FoundationsSaloon\Requests\GetCertificateTypesRequest;
 use FoundationsSaloon\Requests\GetCompaniesRequest;
 use FoundationsSaloon\Requests\GetCompanyRequest;
 use FoundationsSaloon\Requests\GetContactsRequest;
@@ -605,6 +606,19 @@ class FoundationsService
         }
 
         return $this->getPaginatedResults($tenancyExtensionsRequest);
+    }
+
+    public function getCertificateTypes(): ?array
+    {
+        $certificateTypesRequest = new GetCertificateTypesRequest;
+        $response = $this->connector->send($certificateTypesRequest);
+
+        if (! $response->successful()) {
+            $this->handleRequestFail($certificateTypesRequest, $response);
+            return null;
+        }
+
+        return json_decode($response->body(), true) ?? null;
     }
 
     /**
