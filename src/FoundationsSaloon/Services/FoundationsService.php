@@ -34,6 +34,7 @@ use FoundationsSaloon\Requests\GetVendorsRelationshipsRequest;
 use FoundationsSaloon\Requests\GetVendorsRequest;
 use FoundationsSaloon\Requests\GetWorksOrderRequest;
 use FoundationsSaloon\Requests\GetWorksOrdersRequest;
+use FoundationsSaloon\Requests\GetWorksOrderTypesRequest;
 use FoundationsSaloon\Requests\PostJournalEntriesRequest;
 use FoundationsSaloon\Requests\UpdateApplicantRequest;
 use FoundationsSaloon\Requests\UpdateCompanyRequest;
@@ -707,6 +708,13 @@ class FoundationsService
         }
 
         return $this->getSingleResult($getWorksOrderRequest);
+    }
+
+    public function getWorksOrderTypes(): ?array
+    {
+        $worksOrderTypesRequest = new GetWorksOrderTypesRequest;
+
+        return $this->getSingleResult($worksOrderTypesRequest);
     }
 
     /**
