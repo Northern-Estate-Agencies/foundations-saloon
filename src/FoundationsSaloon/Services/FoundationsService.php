@@ -1,6 +1,7 @@
 <?php
 
 use FoundationsSaloon\FoundationsConnector;
+use FoundationsSaloon\Requests\GetJournalEntriesRequest;
 use FoundationsSaloon\Requests\PostJournalEntriesRequest;
 use Illuminate\Support\Facades\Log;
 use Saloon\Http\Auth\AccessTokenAuthenticator;
@@ -125,6 +126,51 @@ class FoundationsService
 
         return $this->connector->send($request);
     }
+
+    /**
+     * @param  array<string,string|int>  $queryParameters
+     * @return ?array<array<string,string|array<string>>>
+     */
+    public function getJournalEntries(array $queryParameters = []): ?array
+    {
+        $journalEntriesRequest = new GetJournalEntriesRequest();
+
+        foreach ($queryParameters as $key => $value) {
+            $journalEntriesRequest->query()->add($key, $value);
+        }
+
+        return $this->getPaginatedResults($journalEntriesRequest);
+    }
+
+    /** @return ?array<array<string,string|array<string>>> $results */
+    private function getPaginatedResults(Request $request): ?array
+    {
+        $results = null;
+
+        try {
+            $paginator = $this->connector->paginate($request);
+            $results = $paginator->collect()->all();
+
+            $results = collect($results)
+                ->filter(fn($item) => is_array($item))
+                ->filter(fn($item) => isset(collect($item)->first()['created']))
+                ->values()
+                ->flatten(1)
+                ->toArray();
+        } catch (Exception $e) {
+            Log::error(
+                'Get paginated results request to Foundations failed',
+                [
+                    'requestType' => get_class($request),
+                    'responseStatusCode' => $e->getCode(),
+                    'responseBody' => $e->getMessage(),
+                ]
+            );
+        }
+
+        return $results;
+    }
+
 
     private function handleRequestFail(Request $request, Response $response): void
     {
