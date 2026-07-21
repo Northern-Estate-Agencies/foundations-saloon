@@ -764,6 +764,31 @@ class FoundationsService
         return $vendors;
     }
 
+    /**
+     * @param  array<string,string|int>  $queryParameters
+     * @return ?array<array<string,string|array<string>>>
+     */
+    public function getLandlords(array $queryParameters = []): ?array
+    {
+        $landlordsRequest = new GetLandlordsRequest();
+
+        foreach ($queryParameters as $key => $value) {
+            $landlordsRequest->query()->add($key, $value);
+        }
+
+        $response = $this->connector->send($landlordsRequest);
+
+        if (! $response->successful()) {
+            $this->handleRequestFail($landlordsRequest, $response);
+            return null;
+        }
+
+        /** @var ?array<array<string,string|array<string>>> $landlords */
+        $landlords = json_decode($response->body(), true) ?? null;
+
+        return $landlords;
+    }
+
     /** @return ?array<array<string,string|array<string>>> $results */
     private function getPaginatedResults(Request $request): ?array
     {
