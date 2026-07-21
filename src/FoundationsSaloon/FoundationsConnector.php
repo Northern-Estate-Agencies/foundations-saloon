@@ -25,7 +25,10 @@ class FoundationsConnector extends Connector implements HasPagination
 
     public ?int $tries = 1;
 
-    private bool $useUnsubFlowCredentials = false;
+    public function __construct(
+        protected bool $useJournalEntryAppCredentials = false,
+        protected bool $useUnsubFlowCredentials = false
+    ) {}
 
     public function resolveBaseUrl(): string
     {

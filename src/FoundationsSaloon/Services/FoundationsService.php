@@ -20,6 +20,15 @@ class FoundationsService
         $this->connector->setReapitCustomer($customer);
     }
 
+    public function useUnsubFlowCredentials(): void
+    {
+        $connector = new FoundationsConnector(
+            useUnsubFlowCredentials: true
+        );
+
+        $this->setUpAuthentication($connector);
+    }
+
     private function setUpAuthentication(?FoundationsConnector $connector = null): void
     {
         if ($connector === null) {
