@@ -5,6 +5,7 @@ use App\Saloon\Foundations\Requests\UpdatePropertyRequest;
 use FoundationsSaloon\FoundationsConnector;
 use FoundationsSaloon\Requests\GetApplicantRequest;
 use FoundationsSaloon\Requests\GetApplicantsRequest;
+use FoundationsSaloon\Requests\GetAppointmentRequest;
 use FoundationsSaloon\Requests\GetAppointmentsRequest;
 use FoundationsSaloon\Requests\GetAppointmentTypesRequest;
 use FoundationsSaloon\Requests\GetAreaRequest;
@@ -644,6 +645,17 @@ class FoundationsService
         }
 
         return $this->getPaginatedResults($appointmentsRequest);
+    }
+
+    public function getAppointment(string $appointmentId, array $queryParameters = []): ?array
+    {
+        $appointmentRequest = new GetAppointmentRequest($appointmentId);
+
+        foreach ($queryParameters as $key => $value) {
+            $appointmentRequest->query()->add($key, $value);
+        }
+        
+        return $this->getSingleResult($appointmentRequest);
     }
 
     public function getWorksOrders(array $queryParameters = []): ?array
