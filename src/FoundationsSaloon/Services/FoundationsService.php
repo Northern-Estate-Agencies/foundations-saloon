@@ -2,8 +2,10 @@
 
 use FoundationsSaloon\FoundationsConnector;
 use FoundationsSaloon\Requests\GetAreasRequest;
+use FoundationsSaloon\Requests\GetContactsRequest;
 use FoundationsSaloon\Requests\GetJournalEntriesRequest;
 use FoundationsSaloon\Requests\PostJournalEntriesRequest;
+use FoundationsSaloon\Requests\UpdateContactRequest;
 use Illuminate\Support\Facades\Log;
 use Saloon\Http\Auth\AccessTokenAuthenticator;
 use Saloon\Http\Request;
@@ -156,6 +158,54 @@ class FoundationsService
         }
 
         return $this->getPaginatedResults($areasRequest);
+    }
+
+    /**
+     * @param  array<string,string>  $changes
+     */
+    public function updateContact(string $contactRpsId, array $changes): bool
+    {
+        $contactRequest = new GetContactsRequest();
+        $contactRequest->query()->add('id', $contactRpsId);
+
+        $response = $this->connector->send($contactRequest);
+
+        if (! $response->successful()) {
+            $this->handleRequestFail($contactRequest, $response);
+            return false;
+        }
+
+        /** @var array<array<string,string>> $embeddedData */
+        $embeddedData = $response->collect()->get('_embedded');
+        $contactData = collect($embeddedData)->first();
+
+        if (!$contactData) {
+            Log::error('Could not get a contact', ['contactRpsId' => $contactRpsId]);
+
+            return false;
+        }
+
+        $etag = $contactData['_eTag'] ?? null;
+
+        if (! isset($etag)) {
+            Log::error('Could not find etag for contact', ['contactData' => $contactData]);
+
+            return false;
+        }
+
+        $updateRequest = new UpdateContactRequest($contactRpsId, $etag);
+
+        foreach ($changes as $key => $value) {
+            $updateRequest->body()->add($key, $value);
+        }
+
+        $response = $this->connector->send($updateRequest);
+
+        if (! $response->successful()) {
+            $this->handleRequestFail($updateRequest, $response);
+        }
+
+        return $response->successful();
     }
 
     /** @return ?array<array<string,string|array<string>>> $results */
