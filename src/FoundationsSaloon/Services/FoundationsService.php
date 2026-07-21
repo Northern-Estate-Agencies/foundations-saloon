@@ -2,6 +2,7 @@
 
 use App\Saloon\Foundations\Requests\UpdatePropertyRequest;
 use FoundationsSaloon\FoundationsConnector;
+use FoundationsSaloon\Requests\GetAreaRequest;
 use FoundationsSaloon\Requests\GetAreasRequest;
 use FoundationsSaloon\Requests\GetCompaniesRequest;
 use FoundationsSaloon\Requests\GetCompanyRequest;
@@ -530,6 +531,31 @@ class FoundationsService
         $property = json_decode($response->body(), true) ?? null;
 
         return $property;
+    }
+
+    /**
+     * @param array<string,string|int> $queryParameters
+     * @return ?array<array<string,string|array<string>>>
+     */
+    public function getArea(string $areaId, array $queryParameters = []): ?array
+    {
+        $areaRequest = new GetAreaRequest($areaId);
+
+        foreach ($queryParameters as $key => $value) {
+            $areaRequest->query()->add($key, $value);
+        }
+
+        $response = $this->connector->send($areaRequest);
+
+        if (! $response->successful()) {
+            $this->handleRequestFail($areaRequest, $response);
+            return null;
+        }
+
+        /** @var ?array<array<string,string|array<string>>> $area */
+        $area = json_decode($response->body(), true) ?? null;
+
+        return $area;
     }
 
     /** @return ?array<array<string,string|array<string>>> $results */
