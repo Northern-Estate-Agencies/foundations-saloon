@@ -1,9 +1,5 @@
 <?php
 
-use App\Saloon\Foundations\Requests\GetBuyingPositionsRequest;
-use App\Saloon\Foundations\Requests\GetPropertyMarketingDataRequest;
-use App\Saloon\Foundations\Requests\UpdateAppointmentRequest;
-use App\Saloon\Foundations\Requests\UpdatePropertyRequest;
 use FoundationsSaloon\FoundationsConnector;
 use FoundationsSaloon\Requests\GetApplicantRequest;
 use FoundationsSaloon\Requests\GetApplicantsRequest;
@@ -12,6 +8,7 @@ use FoundationsSaloon\Requests\GetAppointmentsRequest;
 use FoundationsSaloon\Requests\GetAppointmentTypesRequest;
 use FoundationsSaloon\Requests\GetAreaRequest;
 use FoundationsSaloon\Requests\GetAreasRequest;
+use FoundationsSaloon\Requests\GetBuyingPositionsRequest;
 use FoundationsSaloon\Requests\GetCertificateTypesRequest;
 use FoundationsSaloon\Requests\GetCompaniesRequest;
 use FoundationsSaloon\Requests\GetCompanyRequest;
@@ -33,6 +30,7 @@ use FoundationsSaloon\Requests\GetOfficesRequest;
 use FoundationsSaloon\Requests\GetPropertiesRequest;
 use FoundationsSaloon\Requests\GetPropertyCertificatesRequest;
 use FoundationsSaloon\Requests\GetPropertyImages;
+use FoundationsSaloon\Requests\GetPropertyMarketingDataRequest;
 use FoundationsSaloon\Requests\GetPropertyRequest;
 use FoundationsSaloon\Requests\GetTenanciesRequest;
 use FoundationsSaloon\Requests\GetTenancyChecksRequest;
@@ -48,8 +46,10 @@ use FoundationsSaloon\Requests\GetWorksOrderTypesRequest;
 use FoundationsSaloon\Requests\PostContactRequest;
 use FoundationsSaloon\Requests\PostJournalEntriesRequest;
 use FoundationsSaloon\Requests\UpdateApplicantRequest;
+use FoundationsSaloon\Requests\UpdateAppointmentRequest;
 use FoundationsSaloon\Requests\UpdateCompanyRequest;
 use FoundationsSaloon\Requests\UpdateContactRequest;
+use FoundationsSaloon\Requests\UpdatePropertyRequest;
 use FoundationsSaloon\Requests\UpdateWorksOrderRequest;
 use Illuminate\Support\Facades\Log;
 use Saloon\Exceptions\Request\Statuses\NotFoundException;

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Saloon\Foundations\Requests;
+namespace FoundationsSaloon\Requests;
 
 use Saloon\Enums\Method;
 use Saloon\Http\Request;
