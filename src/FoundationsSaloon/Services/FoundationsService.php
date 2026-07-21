@@ -141,7 +141,7 @@ class FoundationsService
             'MI',
             'contact',
             $contactId,
-            $message . ' - MailFlow'
+            $message
         );
 
         return $this->connector->send($request);
@@ -150,10 +150,10 @@ class FoundationsService
     public function storeApplicantJournalEntry(string $applicantId, string $message): Response
     {
         $request = new PostJournalEntriesRequest(
-            'MI',
-            'applicant',
-            $applicantId,
-            $message . ' - MailFlow'
+            typeId: 'MI',
+            associatedType: 'applicant',
+            associatedId: $applicantId,
+            description: $message,
         );
 
         return $this->connector->send($request);
