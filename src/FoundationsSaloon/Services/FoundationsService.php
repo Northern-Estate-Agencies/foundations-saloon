@@ -466,6 +466,31 @@ class FoundationsService
         return $this->getPaginatedResults($contactRequest);
     }
 
+    /**
+     * @param  array<string,string|int,array<string>> $queryParameters
+     * @return ?array<array<string,string|array<string>>>
+     */
+    public function getProperties(array $queryParameters = []): ?array
+    {
+        $propertiesRequest = new GetPropertiesRequest();
+
+        foreach ($queryParameters as $key => $value) {
+            $propertiesRequest->query()->add($key, $value);
+        }
+
+        $response = $this->connector->send($propertiesRequest);
+
+        if (! $response->successful()) {
+            $this->handleRequestFail($propertiesRequest, $response);
+            return null;
+        }
+
+        /** @var ?array<array<string,string|array<string>>> $properties */
+        $properties = json_decode($response->body(), true) ?? null;
+
+        return $properties;
+    }
+
     /** @return ?array<array<string,string|array<string>>> $results */
     private function getPaginatedResults(Request $request): ?array
     {
