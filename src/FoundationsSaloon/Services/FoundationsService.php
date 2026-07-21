@@ -38,6 +38,19 @@ class FoundationsService
         $this->setUpAuthentication($connector);
     }
 
+    /*
+        This is only to be used in rare cases where we think a single method
+        or function may run for longer than a token's lifetime.
+    */
+    public function ensureConnectorIsAuthenticated(string $customer): void
+    {
+        // If the authenticator has expired we need to effectively re-build the connector
+        if ($this->authenticator->hasExpired()) {
+            $this->setUpAuthentication();
+            $this->setReapitCustomer($customer);
+        }
+    }
+
     private function setUpAuthentication(?FoundationsConnector $connector = null): void
     {
         if ($connector === null) {
