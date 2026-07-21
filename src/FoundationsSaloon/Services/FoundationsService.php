@@ -916,15 +916,15 @@ class FoundationsService
         return $this->getSingleResult($landlordRequest);
     }
 
-    public function getImages(array $queryParameters = []): ?array
+    public function getPropertyImages(array $queryParameters = []): ?array
     {
-        $imagesRequest = new GetPropertyImages();
+        $propertyImagesRequest = new GetPropertyImages();
 
         foreach ($queryParameters as $key => $value) {
-            $imagesRequest->query()->add($key, $value);
+            $propertyImagesRequest->query()->add($key, $value);
         }
 
-        return $this->getPaginatedResults($imagesRequest);
+        return $this->getPaginatedResults($propertyImagesRequest);
     }
 
     public function doesContactConsentToMarketing(string $contactRpsId): bool
