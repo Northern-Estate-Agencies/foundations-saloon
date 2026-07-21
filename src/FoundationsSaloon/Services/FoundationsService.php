@@ -789,6 +789,24 @@ class FoundationsService
         return $landlords;
     }
 
+    public function doesContactConsentToMarketing(string $contactRpsId): bool
+    {
+        $reapitContactRecord = $this->getContact($contactRpsId);
+
+        if (! isset($reapitContactRecord)) {
+            Log::error(
+                'Could not find contact, assuming marketing consent is denied',
+                ['contactRpsId' => $contactRpsId]
+            );
+
+            return false;
+        }
+
+        $marketingConsent = $reapitContactRecord['marketingConsent'] ?? 'deny';
+
+        return in_array($marketingConsent, ['given', 'grant']);
+    }
+
     /** @return ?array<array<string,string|array<string>>> $results */
     private function getPaginatedResults(Request $request): ?array
     {
