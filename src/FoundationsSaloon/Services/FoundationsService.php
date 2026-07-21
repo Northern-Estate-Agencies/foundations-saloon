@@ -6,7 +6,9 @@ use FoundationsSaloon\Requests\GetAreasRequest;
 use FoundationsSaloon\Requests\GetCompaniesRequest;
 use FoundationsSaloon\Requests\GetContactsRequest;
 use FoundationsSaloon\Requests\GetJournalEntriesRequest;
+use FoundationsSaloon\Requests\GetLandlordsRelationshipsRequest;
 use FoundationsSaloon\Requests\GetPropertiesRequest;
+use FoundationsSaloon\Requests\GetVendorsRelationshipsRequest;
 use FoundationsSaloon\Requests\PostJournalEntriesRequest;
 use FoundationsSaloon\Requests\UpdateCompanyRequest;
 use FoundationsSaloon\Requests\UpdateContactRequest;
@@ -315,6 +317,42 @@ class FoundationsService
         }
 
         return $response->successful();
+    }
+
+    /**
+     * @param  string  $ownerRpsId
+     * @param  bool  $isVendor
+     * @return array<string, string>|null
+     */
+    public function getPropertyOwnerRelationship($ownerRpsId, $isVendor): ?array
+    {
+        if (($ownerRpsId ?? '') === '') {
+            Log::info("No owner ID set, returning null");
+            return null;
+        }
+
+        if ($isVendor) {
+            $getOwnerRequest = new GetVendorsRelationshipsRequest($ownerRpsId);
+        } else {
+            $getOwnerRequest = new GetLandlordsRelationshipsRequest($ownerRpsId);
+        }
+
+        $response = $this->connector->send($getOwnerRequest);
+
+        if (! $response->successful()) {
+            $this->handleRequestFail($getOwnerRequest, $response);
+            return null;
+        }
+
+        /** @var array<string,array<array<string,string>>> $propertyOwnerArray */
+        $propertyOwnerArray = json_decode($response->body(), true);
+        $propertyOwnerArray = $propertyOwnerArray['_embedded'];
+
+        $propertyOwner = collect($propertyOwnerArray)
+            ->filter(fn($item) => $item['associatedType'] === 'contact')
+            ->first();
+
+        return $propertyOwner;
     }
 
     /** @return ?array<array<string,string|array<string>>> $results */
