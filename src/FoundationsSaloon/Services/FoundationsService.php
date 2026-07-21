@@ -355,6 +355,30 @@ class FoundationsService
         return $propertyOwner;
     }
 
+    /**
+     * @return array<string, string>|null
+     */
+    public function getContact(string $contactRpsId): ?array
+    {
+        $contactRequest = new GetContactsRequest();
+        $contactRequest->query()->add('id', $contactRpsId);
+
+        $response = $this->connector->send($contactRequest);
+
+        if (! $response->successful()) {
+            $this->handleRequestFail($contactRequest, $response);
+            return null;
+        }
+
+        /** @var array<string,array<array<string,string>>> $contactArray */
+        $contactArray = json_decode($response->body(), true);
+        $contactArray = $contactArray['_embedded'];
+
+        $contact = collect($contactArray)->first();
+
+        return $contact;
+    }
+
     /** @return ?array<array<string,string|array<string>>> $results */
     private function getPaginatedResults(Request $request): ?array
     {
