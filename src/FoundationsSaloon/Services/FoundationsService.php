@@ -6,6 +6,7 @@ use FoundationsSaloon\Requests\GetCompaniesRequest;
 use FoundationsSaloon\Requests\GetContactsRequest;
 use FoundationsSaloon\Requests\GetJournalEntriesRequest;
 use FoundationsSaloon\Requests\PostJournalEntriesRequest;
+use FoundationsSaloon\Requests\UpdateCompanyRequest;
 use FoundationsSaloon\Requests\UpdateContactRequest;
 use Illuminate\Support\Facades\Log;
 use Saloon\Http\Auth\AccessTokenAuthenticator;
@@ -218,6 +219,54 @@ class FoundationsService
         }
 
         return $this->getPaginatedResults($companiesRequest);
+    }
+
+    /**
+     * @param  array<string,string>  $changes
+     */
+    public function updateCompany(string $companyRpsId, array $changes): bool
+    {
+        $companyRequest = new GetCompaniesRequest();
+        $companyRequest->query()->add('id', $companyRpsId);
+
+        $response = $this->connector->send($companyRequest);
+
+        if (! $response->successful()) {
+            $this->handleRequestFail($companyRequest, $response);
+            return false;
+        }
+
+        /** @var array<array<string,string>> $embeddedData */
+        $embeddedData = $response->collect()->get('_embedded');
+        $companyData = collect($embeddedData)->first();
+
+        if (!$companyData) {
+            Log::error('Could not get a company', ['companyRpsId' => $companyRpsId]);
+
+            return false;
+        }
+
+        $etag = $companyData['_eTag'] ?? null;
+
+        if (! isset($etag)) {
+            Log::error('Could not find etag for company', ['companyData' => $companyData]);
+
+            return false;
+        }
+
+        $updateRequest = new UpdateCompanyRequest($companyRpsId, $etag);
+
+        foreach ($changes as $key => $value) {
+            $updateRequest->body()->add($key, $value);
+        }
+
+        $response = $this->connector->send($updateRequest);
+
+        if (! $response->successful()) {
+            $this->handleRequestFail($updateRequest, $response);
+        }
+
+        return $response->successful();
     }
 
     /** @return ?array<array<string,string|array<string>>> $results */
