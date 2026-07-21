@@ -10,6 +10,7 @@ use FoundationsSaloon\Requests\GetJournalEntriesRequest;
 use FoundationsSaloon\Requests\GetLandlordsRelationshipsRequest;
 use FoundationsSaloon\Requests\GetLandlordsRequest;
 use FoundationsSaloon\Requests\GetPropertiesRequest;
+use FoundationsSaloon\Requests\GetPropertyRequest;
 use FoundationsSaloon\Requests\GetVendorsRelationshipsRequest;
 use FoundationsSaloon\Requests\GetVendorsRequest;
 use FoundationsSaloon\Requests\PostJournalEntriesRequest;
@@ -504,6 +505,31 @@ class FoundationsService
         }
 
         return $this->getPaginatedResults($propertiesRequest);
+    }
+
+    /**
+     * @param array<string,string|int> $queryParameters
+     * @return ?array<array<string,string|array<string>>>
+     */
+    public function getProperty(string $propertyId, array $queryParameters = []): ?array
+    {
+        $propertyRequest = new GetPropertyRequest($propertyId);
+
+        foreach ($queryParameters as $key => $value) {
+            $propertyRequest->query()->add($key, $value);
+        }
+
+        $response = $this->connector->send($propertyRequest);
+
+        if (! $response->successful()) {
+            $this->handleRequestFail($propertyRequest, $response);
+            return null;
+        }
+
+        /** @var ?array<array<string,string|array<string>>> $property */
+        $property = json_decode($response->body(), true) ?? null;
+
+        return $property;
     }
 
     /** @return ?array<array<string,string|array<string>>> $results */
