@@ -23,7 +23,9 @@ use FoundationsSaloon\Requests\GetLandlordRequest;
 use FoundationsSaloon\Requests\GetLandlordsRelationshipsRequest;
 use FoundationsSaloon\Requests\GetLandlordsRequest;
 use FoundationsSaloon\Requests\GetNegotiatorRequest;
+use FoundationsSaloon\Requests\GetNegotiatorsRequest;
 use FoundationsSaloon\Requests\GetOffersRequest;
+use FoundationsSaloon\Requests\GetOfficeRequest;
 use FoundationsSaloon\Requests\GetOfficesRequest;
 use FoundationsSaloon\Requests\GetPropertiesRequest;
 use FoundationsSaloon\Requests\GetPropertyCertificatesRequest;
@@ -787,6 +789,18 @@ class FoundationsService
         return $this->getSingleResult($negotiatorRequest);
     }
 
+    public function getNegotiators(array $queryParameters = [])
+    {
+        $negotiatorsRequest = new GetNegotiatorsRequest;
+
+        foreach ($queryParameters as $key => $value) {
+            $negotiatorsRequest->query()->add($key, $value);
+        }
+
+        return $this->getPaginatedResults($negotiatorsRequest);
+    }
+
+
     /**
      * @param  array<string,string|int>  $queryParameters
      * @return ?array<array<string,string|array<string>>>
@@ -810,6 +824,17 @@ class FoundationsService
         $offices = json_decode($response->body(), true) ?? null;
 
         return $offices;
+    }
+
+    public function getOffice(string $officeRpsId, array $queryParameters = []): ?array
+    {
+        $getOfficeRequest = new GetOfficeRequest($officeRpsId);
+
+        foreach ($queryParameters as $key => $value) {
+            $getOfficeRequest->query()->add($key, $value);
+        }
+
+        return $this->getSingleResult($getOfficeRequest);
     }
 
     public function getOfficesPaged(array $queryParameters = []): ?array
