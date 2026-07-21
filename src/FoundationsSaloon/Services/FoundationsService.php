@@ -148,36 +148,6 @@ class FoundationsService
     }
 
     /**
-     * @param  array<string,string|int>  $queryParameters
-     * @return ?array<array<string,string|array<string>>>
-     */
-    public function getJournalEntries(array $queryParameters = []): ?array
-    {
-        $journalEntriesRequest = new GetJournalEntriesRequest();
-
-        foreach ($queryParameters as $key => $value) {
-            $journalEntriesRequest->query()->add($key, $value);
-        }
-
-        return $this->getPaginatedResults($journalEntriesRequest);
-    }
-
-    /**
-     * @param  array<string,string|int|array<string>>  $queryParameters
-     * @return ?array<array<string,string|array<string>>>
-     */
-    public function getAreas(array $queryParameters = []): ?array
-    {
-        $areasRequest = new GetAreasRequest();
-
-        foreach ($queryParameters as $key => $value) {
-            $areasRequest->query()->add($key, $value);
-        }
-
-        return $this->getPaginatedResults($areasRequest);
-    }
-
-    /**
      * @param  array<string,string>  $changes
      */
     public function updateContact(string $contactRpsId, array $changes): bool
@@ -223,17 +193,6 @@ class FoundationsService
         }
 
         return $response->successful();
-    }
-
-    public function getCompanies(array $queryParameters = []): ?array
-    {
-        $companiesRequest = new GetCompaniesRequest;
-
-        foreach ($queryParameters as $key => $value) {
-            $companiesRequest->query()->add($key, $value);
-        }
-
-        return $this->getPaginatedResults($companiesRequest);
     }
 
     /**
@@ -328,6 +287,47 @@ class FoundationsService
         }
 
         return $response->successful();
+    }
+
+    /**
+     * @param  array<string,string|int>  $queryParameters
+     * @return ?array<array<string,string|array<string>>>
+     */
+    public function getJournalEntries(array $queryParameters = []): ?array
+    {
+        $journalEntriesRequest = new GetJournalEntriesRequest();
+
+        foreach ($queryParameters as $key => $value) {
+            $journalEntriesRequest->query()->add($key, $value);
+        }
+
+        return $this->getPaginatedResults($journalEntriesRequest);
+    }
+
+    /**
+     * @param  array<string,string|int|array<string>>  $queryParameters
+     * @return ?array<array<string,string|array<string>>>
+     */
+    public function getAreas(array $queryParameters = []): ?array
+    {
+        $areasRequest = new GetAreasRequest();
+
+        foreach ($queryParameters as $key => $value) {
+            $areasRequest->query()->add($key, $value);
+        }
+
+        return $this->getPaginatedResults($areasRequest);
+    }
+
+    public function getCompanies(array $queryParameters = []): ?array
+    {
+        $companiesRequest = new GetCompaniesRequest;
+
+        foreach ($queryParameters as $key => $value) {
+            $companiesRequest->query()->add($key, $value);
+        }
+
+        return $this->getPaginatedResults($companiesRequest);
     }
 
     /**
