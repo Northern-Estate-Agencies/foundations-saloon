@@ -10,6 +10,7 @@ use FoundationsSaloon\Requests\GetContactsRequest;
 use FoundationsSaloon\Requests\GetJournalEntriesRequest;
 use FoundationsSaloon\Requests\GetLandlordsRelationshipsRequest;
 use FoundationsSaloon\Requests\GetLandlordsRequest;
+use FoundationsSaloon\Requests\GetNegotiatorRequest;
 use FoundationsSaloon\Requests\GetPropertiesRequest;
 use FoundationsSaloon\Requests\GetPropertyRequest;
 use FoundationsSaloon\Requests\GetVendorsRelationshipsRequest;
@@ -556,6 +557,31 @@ class FoundationsService
         $area = json_decode($response->body(), true) ?? null;
 
         return $area;
+    }
+
+    /**
+     * @param array<string,string|int> $queryParameters
+     * @return ?array<array<string,string|array<string>>>
+     */
+    public function getNegotiator(string $negotiatorId, array $queryParameters = []): ?array
+    {
+        $negotiatorRequest = new GetNegotiatorRequest($negotiatorId);
+
+        foreach ($queryParameters as $key => $value) {
+            $negotiatorRequest->query()->add($key, $value);
+        }
+
+        $response = $this->connector->send($negotiatorRequest);
+
+        if (! $response->successful()) {
+            $this->handleRequestFail($negotiatorRequest, $response);
+            return null;
+        }
+
+        /** @var ?array<array<string,string|array<string>>> $property */
+        $property = json_decode($response->body(), true) ?? null;
+
+        return $property;
     }
 
     /** @return ?array<array<string,string|array<string>>> $results */
