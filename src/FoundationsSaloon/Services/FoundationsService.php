@@ -4,11 +4,14 @@ use App\Saloon\Foundations\Requests\UpdatePropertyRequest;
 use FoundationsSaloon\FoundationsConnector;
 use FoundationsSaloon\Requests\GetAreasRequest;
 use FoundationsSaloon\Requests\GetCompaniesRequest;
+use FoundationsSaloon\Requests\GetCompanyRequest;
 use FoundationsSaloon\Requests\GetContactsRequest;
 use FoundationsSaloon\Requests\GetJournalEntriesRequest;
 use FoundationsSaloon\Requests\GetLandlordsRelationshipsRequest;
+use FoundationsSaloon\Requests\GetLandlordsRequest;
 use FoundationsSaloon\Requests\GetPropertiesRequest;
 use FoundationsSaloon\Requests\GetVendorsRelationshipsRequest;
+use FoundationsSaloon\Requests\GetVendorsRequest;
 use FoundationsSaloon\Requests\PostJournalEntriesRequest;
 use FoundationsSaloon\Requests\UpdateCompanyRequest;
 use FoundationsSaloon\Requests\UpdateContactRequest;
@@ -377,6 +380,54 @@ class FoundationsService
         $contact = collect($contactArray)->first();
 
         return $contact;
+    }
+
+    public function getCompany(string $companyId, array $queryParameters = []): ?array
+    {
+        $companyRequest = new GetCompanyRequest($companyId);
+
+        foreach ($queryParameters as $key => $value) {
+            $companyRequest->query()->add($key, $value);
+        }
+
+        $response = $this->connector->send($companyRequest);
+
+        if (! $response->successful()) {
+            $this->handleRequestFail($companyRequest, $response);
+            return null;
+        }
+
+        return json_decode($response->body(), true);
+    }
+
+    /**
+     * @param  string  $ownerRpsId
+     * @param  bool  $isVendor
+     * @return array<string, string>|null
+     */
+    public function getPropertyOwner($ownerRpsId, $isVendor): ?array
+    {
+        if ($isVendor) {
+            $getOwnerRequest = new GetVendorsRequest();
+        } else {
+            $getOwnerRequest = new GetLandlordsRequest();
+        }
+
+        $getOwnerRequest->query()->add('id', $ownerRpsId);
+        $response = $this->connector->send($getOwnerRequest);
+
+        if (! $response->successful()) {
+            $this->handleRequestFail($getOwnerRequest, $response);
+            return null;
+        }
+
+        /** @var array<string,array<array<string,string>>> $propertyOwnerArray */
+        $propertyOwnerArray = json_decode($response->body(), true);
+        $propertyOwnerArray = $propertyOwnerArray['_embedded'];
+
+        $propertyOwner = collect($propertyOwnerArray)->first();
+
+        return $propertyOwner;
     }
 
     /** @return ?array<array<string,string|array<string>>> $results */
