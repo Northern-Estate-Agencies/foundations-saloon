@@ -29,6 +29,7 @@ use FoundationsSaloon\Requests\GetOfficeRequest;
 use FoundationsSaloon\Requests\GetOfficesRequest;
 use FoundationsSaloon\Requests\GetPropertiesRequest;
 use FoundationsSaloon\Requests\GetPropertyCertificatesRequest;
+use FoundationsSaloon\Requests\GetPropertyImages;
 use FoundationsSaloon\Requests\GetPropertyRequest;
 use FoundationsSaloon\Requests\GetTenanciesRequest;
 use FoundationsSaloon\Requests\GetTenancyChecksRequest;
@@ -901,6 +902,17 @@ class FoundationsService
         }
 
         return $this->getSingleResult($landlordRequest);
+    }
+
+    public function getImages(array $queryParameters = []): ?array
+    {
+        $imagesRequest = new GetPropertyImages();
+
+        foreach ($queryParameters as $key => $value) {
+            $imagesRequest->query()->add($key, $value);
+        }
+
+        return $this->getPaginatedResults($imagesRequest);
     }
 
     public function doesContactConsentToMarketing(string $contactRpsId): bool
