@@ -1,5 +1,8 @@
 <?php
 
+namespace Services;
+
+use Exception;
 use FoundationsSaloon\FoundationsConnector;
 use FoundationsSaloon\Requests\GetApplicantRequest;
 use FoundationsSaloon\Requests\GetApplicantsRequest;
