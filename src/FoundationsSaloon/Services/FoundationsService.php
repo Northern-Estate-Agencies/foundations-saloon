@@ -38,6 +38,7 @@ use FoundationsSaloon\Requests\PostJournalEntriesRequest;
 use FoundationsSaloon\Requests\UpdateApplicantRequest;
 use FoundationsSaloon\Requests\UpdateCompanyRequest;
 use FoundationsSaloon\Requests\UpdateContactRequest;
+use FoundationsSaloon\Requests\UpdateWorksOrderRequest;
 use Illuminate\Support\Facades\Log;
 use Saloon\Exceptions\Request\Statuses\NotFoundException;
 use Saloon\Http\Auth\AccessTokenAuthenticator;
@@ -330,6 +331,45 @@ class FoundationsService
         }
 
         $updateRequest = new UpdateApplicantRequest($applicantId, $etag);
+
+        foreach ($changes as $key => $value) {
+            $updateRequest->body()->add($key, $value);
+        }
+
+        $response = $this->connector->send($updateRequest);
+
+        if (! $response->successful()) {
+            $this->handleRequestFail($updateRequest, $response);
+        }
+
+        return $response->successful();
+    }
+
+    /**
+     * @param  array<string,string>  $changes
+     */
+    public function updateWorksOrder(string $worksOrderRpsId, array $changes): bool
+    {
+        $worksOrderRequest = new GetWorksOrderRequest($worksOrderRpsId);
+
+        $response = $this->connector->send($worksOrderRequest);
+
+        if (! $response->successful()) {
+            Log::error('Error retrieving works order', ['response' => $response->body(), 'status' => $response->status()]);
+
+            return false;
+        }
+
+        $worksOrderData = $response->collect()->toArray();
+        $etag = $worksOrderData['_eTag'] ?? null;
+
+        if (! isset($etag)) {
+            Log::error('Could not find etag for contact', ['contactData' => $worksOrderData]);
+
+            return false;
+        }
+
+        $updateRequest = new UpdateWorksOrderRequest($worksOrderRpsId, $etag);
 
         foreach ($changes as $key => $value) {
             $updateRequest->body()->add($key, $value);
