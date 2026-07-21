@@ -20,6 +20,7 @@ use FoundationsSaloon\Requests\GetPropertyCertificatesRequest;
 use FoundationsSaloon\Requests\GetPropertyRequest;
 use FoundationsSaloon\Requests\GetTenanciesRequest;
 use FoundationsSaloon\Requests\GetTenancyChecksRequest;
+use FoundationsSaloon\Requests\GetTenancyExtensionsRequest;
 use FoundationsSaloon\Requests\GetTenancyRequest;
 use FoundationsSaloon\Requests\GetTransactionsRequest;
 use FoundationsSaloon\Requests\GetVendorRequest;
@@ -593,6 +594,17 @@ class FoundationsService
         }
 
         return $this->getPaginatedResults($propertyCertificatesRequest);
+    }
+
+    public function getTenancyExtensions(string $tenancyId, array $queryParameters = []): ?array
+    {
+        $tenancyExtensionsRequest = new GetTenancyExtensionsRequest($tenancyId);
+
+        foreach ($queryParameters as $key => $value) {
+            $tenancyExtensionsRequest->query()->add($key, $value);
+        }
+
+        return $this->getPaginatedResults($tenancyExtensionsRequest);
     }
 
     /**
