@@ -113,6 +113,19 @@ class FoundationsService
         return $this->connector->send($request);
     }
 
+    public function storePropertyMatchJournalEntry(string $applicantId, string $propertyId): Response
+    {
+        $request = new PostJournalEntriesRequest(
+            typeId: 'MA',
+            associatedType: 'applicant',
+            associatedId: $applicantId,
+            description: 'Matched Via Mailflow',
+            propertyId: $propertyId
+        );
+
+        return $this->connector->send($request);
+    }
+
     private function handleRequestFail(Request $request, Response $response): void
     {
         $responseCode = $response->status();
