@@ -1,6 +1,6 @@
 <?php
 
-namespace Services;
+namespace FoundationsSaloon\Services;
 
 use Exception;
 use FoundationsSaloon\FoundationsConnector;
