@@ -1,6 +1,7 @@
 <?php
 
 use FoundationsSaloon\FoundationsConnector;
+use FoundationsSaloon\Requests\PostJournalEntriesRequest;
 use Illuminate\Support\Facades\Log;
 use Saloon\Http\Auth\AccessTokenAuthenticator;
 use Saloon\Http\Request;
@@ -86,6 +87,18 @@ class FoundationsService
         $resultsArray = $resultsArray['_embedded'] ?? [];
 
         return count($resultsArray) > 0;
+    }
+
+    public function storeContactJournalEntry(string $contactId, string $message): Response
+    {
+        $request = new PostJournalEntriesRequest(
+            'MI',
+            'contact',
+            $contactId,
+            $message . ' - MailFlow'
+        );
+
+        return $this->connector->send($request);
     }
 
     private function handleRequestFail(Request $request, Response $response): void
