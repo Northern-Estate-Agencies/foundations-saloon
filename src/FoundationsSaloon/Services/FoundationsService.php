@@ -101,6 +101,18 @@ class FoundationsService
         return $this->connector->send($request);
     }
 
+    public function storeApplicantJournalEntry(string $applicantId, string $message): Response
+    {
+        $request = new PostJournalEntriesRequest(
+            'MI',
+            'applicant',
+            $applicantId,
+            $message . ' - MailFlow'
+        );
+
+        return $this->connector->send($request);
+    }
+
     private function handleRequestFail(Request $request, Response $response): void
     {
         $responseCode = $response->status();
