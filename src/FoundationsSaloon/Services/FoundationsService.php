@@ -9,6 +9,7 @@ use FoundationsSaloon\Requests\GetAreasRequest;
 use FoundationsSaloon\Requests\GetCertificateTypesRequest;
 use FoundationsSaloon\Requests\GetCompaniesRequest;
 use FoundationsSaloon\Requests\GetCompanyRequest;
+use FoundationsSaloon\Requests\GetContactRequest;
 use FoundationsSaloon\Requests\GetContactsRequest;
 use FoundationsSaloon\Requests\GetDocumentDownloadRequest;
 use FoundationsSaloon\Requests\GetDocumentRequest;
@@ -420,25 +421,15 @@ class FoundationsService
     /**
      * @return array<string, string>|null
      */
-    public function getContact(string $contactRpsId): ?array
+    public function getContact(string $contactRpsId, array $queryParameters = []): ?array
     {
-        $contactRequest = new GetContactsRequest();
-        $contactRequest->query()->add('id', $contactRpsId);
+        $contactRequest = new GetContactRequest($contactRpsId);
 
-        $response = $this->connector->send($contactRequest);
-
-        if (! $response->successful()) {
-            $this->handleRequestFail($contactRequest, $response);
-            return null;
+        foreach ($queryParameters as $key => $value) {
+            $contactRequest->query()->add($key, $value);
         }
 
-        /** @var array<string,array<array<string,string>>> $contactArray */
-        $contactArray = json_decode($response->body(), true);
-        $contactArray = $contactArray['_embedded'];
-
-        $contact = collect($contactArray)->first();
-
-        return $contact;
+        return $this->getSingleResult($contactRequest);
     }
 
     public function getCompany(string $companyId, array $queryParameters = []): ?array
@@ -449,14 +440,7 @@ class FoundationsService
             $companyRequest->query()->add($key, $value);
         }
 
-        $response = $this->connector->send($companyRequest);
-
-        if (! $response->successful()) {
-            $this->handleRequestFail($companyRequest, $response);
-            return null;
-        }
-
-        return json_decode($response->body(), true);
+        return $this->getSingleResult($companyRequest);
     }
 
     /**
@@ -577,17 +561,7 @@ class FoundationsService
             $propertyRequest->query()->add($key, $value);
         }
 
-        $response = $this->connector->send($propertyRequest);
-
-        if (! $response->successful()) {
-            $this->handleRequestFail($propertyRequest, $response);
-            return null;
-        }
-
-        /** @var ?array<array<string,string|array<string>>> $property */
-        $property = json_decode($response->body(), true) ?? null;
-
-        return $property;
+        return $this->getSingleResult($propertyRequest);
     }
 
     public function getPropertyCertificates(string $propertyId, array $queryParameters = []): ?array
@@ -615,14 +589,8 @@ class FoundationsService
     public function getCertificateTypes(): ?array
     {
         $certificateTypesRequest = new GetCertificateTypesRequest;
-        $response = $this->connector->send($certificateTypesRequest);
 
-        if (! $response->successful()) {
-            $this->handleRequestFail($certificateTypesRequest, $response);
-            return null;
-        }
-
-        return json_decode($response->body(), true) ?? null;
+        return $this->getSingleResult($certificateTypesRequest);
     }
 
     public function getDocuments(array $queryParameters = []): ?array
@@ -644,14 +612,7 @@ class FoundationsService
             $documentRequest->query()->add($key, $value);
         }
 
-        $response = $this->connector->send($documentRequest);
-
-        if (! $response->successful()) {
-            $this->handleRequestFail($documentRequest, $response);
-            return null;
-        }
-
-        return json_decode($response->body(), true);
+        return $this->getSingleResult($documentRequest);
     }
 
     public function getDocumentDownload(string $documentId): ?string
@@ -684,17 +645,7 @@ class FoundationsService
             $areaRequest->query()->add($key, $value);
         }
 
-        $response = $this->connector->send($areaRequest);
-
-        if (! $response->successful()) {
-            $this->handleRequestFail($areaRequest, $response);
-            return null;
-        }
-
-        /** @var ?array<array<string,string|array<string>>> $area */
-        $area = json_decode($response->body(), true) ?? null;
-
-        return $area;
+        return $this->getSingleResult($areaRequest);
     }
 
     /**
@@ -709,17 +660,7 @@ class FoundationsService
             $negotiatorRequest->query()->add($key, $value);
         }
 
-        $response = $this->connector->send($negotiatorRequest);
-
-        if (! $response->successful()) {
-            $this->handleRequestFail($negotiatorRequest, $response);
-            return null;
-        }
-
-        /** @var ?array<array<string,string|array<string>>> $property */
-        $property = json_decode($response->body(), true) ?? null;
-
-        return $property;
+        return $this->getSingleResult($negotiatorRequest);
     }
 
     /**
@@ -795,17 +736,7 @@ class FoundationsService
             $applicantRequest->query()->add($key, $value);
         }
 
-        $response = $this->connector->send($applicantRequest);
-
-        if (! $response->successful()) {
-            $this->handleRequestFail($applicantRequest, $response);
-            return null;
-        }
-
-        /** @var ?array<array<string,string|array<string>>> $applicant */
-        $applicant = json_decode($response->body(), true) ?? null;
-
-        return $applicant;
+        return $this->getSingleResult($applicantRequest);
     }
 
     public function getTransactions(array $queryParameters = []): ?array
@@ -852,14 +783,7 @@ class FoundationsService
             $tenancyRequest->query()->add($key, $value);
         }
 
-        $response = $this->connector->send($tenancyRequest);
-
-        if (! $response->successful()) {
-            $this->handleRequestFail($tenancyRequest, $response);
-            return null;
-        }
-
-        return json_decode($response->body(), true);
+        return $this->getSingleResult($tenancyRequest);
     }
 
     public function getTenancyChecks(string $tenancyId, array $queryParameters = []): ?array
@@ -902,23 +826,11 @@ class FoundationsService
     {
         $vendorRequest = new GetVendorRequest($ownerRpsId);
 
-        $vendorRequest->query()->add('id', $ownerRpsId);
-
         foreach ($queryParameters as $key => $value) {
             $vendorRequest->query()->add($key, $value);
         }
 
-        $response = $this->connector->send($vendorRequest);
-
-        if (! $response->successful()) {
-            $this->handleRequestFail($vendorRequest, $response);
-            return null;
-        }
-
-        /** @var ?array<array<string,string|array<string>>> $vendor */
-        $vendor = json_decode($response->body(), true) ?? null;
-
-        return $vendor;
+        return $this->getSingleResult($vendorRequest);
     }
 
     /**
