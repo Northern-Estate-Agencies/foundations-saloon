@@ -1,6 +1,7 @@
 <?php
 
 use App\Saloon\Foundations\Requests\GetBuyingPositionsRequest;
+use App\Saloon\Foundations\Requests\GetPropertyMarketingDataRequest;
 use App\Saloon\Foundations\Requests\UpdatePropertyRequest;
 use FoundationsSaloon\FoundationsConnector;
 use FoundationsSaloon\Requests\GetApplicantRequest;
@@ -407,6 +408,21 @@ class FoundationsService
         }
 
         return $this->getPaginatedResults($journalEntriesRequest);
+    }
+
+    /**
+     * @param array<string,string|int> $queryParameters
+     * @return ?array<array<string,string|array<string>>>
+     */
+    public function getPropertyMarketingData(string $propertyId, array $queryParameters = []): ?array
+    {
+        $propertyMarketingDataRequest = new GetPropertyMarketingDataRequest($propertyId);
+
+        foreach ($queryParameters as $key => $value) {
+            $propertyMarketingDataRequest->query()->add($key, $value);
+        }
+
+        return $this->getSingleResult($propertyMarketingDataRequest);
     }
 
     /**
