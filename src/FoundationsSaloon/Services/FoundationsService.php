@@ -610,6 +610,17 @@ class FoundationsService
         return $offices;
     }
 
+    public function getOfficesPaged(array $queryParameters = []): ?array
+    {
+        $officesRequest = new GetOfficesRequest();
+
+        foreach ($queryParameters as $key => $value) {
+            $officesRequest->query()->add($key, $value);
+        }
+
+        return $this->getPaginatedResults($officesRequest);
+    }
+
     /** @return ?array<array<string,string|array<string>>> $results */
     private function getPaginatedResults(Request $request): ?array
     {
