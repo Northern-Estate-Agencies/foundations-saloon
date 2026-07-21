@@ -6,6 +6,7 @@ use FoundationsSaloon\FoundationsConnector;
 use FoundationsSaloon\Requests\GetApplicantRequest;
 use FoundationsSaloon\Requests\GetApplicantsRequest;
 use FoundationsSaloon\Requests\GetAppointmentsRequest;
+use FoundationsSaloon\Requests\GetAppointmentTypesRequest;
 use FoundationsSaloon\Requests\GetAreaRequest;
 use FoundationsSaloon\Requests\GetAreasRequest;
 use FoundationsSaloon\Requests\GetCertificateTypesRequest;
@@ -723,6 +724,13 @@ class FoundationsService
         $buyingPositionsRequest = new GetBuyingPositionsRequest();
 
         return $this->getSingleResult($buyingPositionsRequest);
+    }
+
+    public function getAppointmentTypes(): ?array
+    {
+        $appointmentTypesRequest = new GetAppointmentTypesRequest;
+
+        return $this->getSingleResult($appointmentTypesRequest);
     }
 
     /**
