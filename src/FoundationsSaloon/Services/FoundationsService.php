@@ -524,32 +524,7 @@ class FoundationsService
         return $propertyOwner;
     }
 
-    /**
-     * @param  array<string,string|int>  $queryParameters
-     * @return ?array<array<string,string|array<string>>>
-     */
     public function getContacts(array $queryParameters = []): ?array
-    {
-        $contactRequest = new GetContactsRequest();
-
-        foreach ($queryParameters as $key => $value) {
-            $contactRequest->query()->add($key, $value);
-        }
-
-        $response = $this->connector->send($contactRequest);
-
-        if (! $response->successful()) {
-            $this->handleRequestFail($contactRequest, $response);
-            return null;
-        }
-
-        /** @var ?array<array<string,string|array<string>>> $contacts */
-        $contacts = json_decode($response->body(), true) ?? null;
-
-        return $contacts;
-    }
-
-    public function getContactsPaged(array $queryParameters = []): ?array
     {
         $contactRequest = new GetContactsRequest();
 
@@ -565,31 +540,6 @@ class FoundationsService
      * @return ?array<array<string,string|array<string>>>
      */
     public function getProperties(array $queryParameters = []): ?array
-    {
-        $propertiesRequest = new GetPropertiesRequest();
-
-        foreach ($queryParameters as $key => $value) {
-            $propertiesRequest->query()->add($key, $value);
-        }
-
-        $response = $this->connector->send($propertiesRequest);
-
-        if (! $response->successful()) {
-            $this->handleRequestFail($propertiesRequest, $response);
-            return null;
-        }
-
-        /** @var ?array<array<string,string|array<string>>> $properties */
-        $properties = json_decode($response->body(), true) ?? null;
-
-        return $properties;
-    }
-
-    /**
-     * @param  array<string,string|int,array<string>> $queryParameters
-     * @return ?array<array<string,string|array<string>>>
-     */
-    public function getPropertiesPaged(array $queryParameters = []): ?array
     {
         $propertiesRequest = new GetPropertiesRequest();
 
@@ -801,32 +751,6 @@ class FoundationsService
         return $this->getPaginatedResults($negotiatorsRequest);
     }
 
-
-    /**
-     * @param  array<string,string|int>  $queryParameters
-     * @return ?array<array<string,string|array<string>>>
-     */
-    public function getOffices(array $queryParameters = []): ?array
-    {
-        $officesRequest = new GetOfficesRequest();
-
-        foreach ($queryParameters as $key => $value) {
-            $officesRequest->query()->add($key, $value);
-        }
-
-        $response = $this->connector->send($officesRequest);
-
-        if (! $response->successful()) {
-            $this->handleRequestFail($officesRequest, $response);
-            return null;
-        }
-
-        /** @var ?array<array<string,string|array<string>>> $offices */
-        $offices = json_decode($response->body(), true) ?? null;
-
-        return $offices;
-    }
-
     public function getOffice(string $officeRpsId, array $queryParameters = []): ?array
     {
         $getOfficeRequest = new GetOfficeRequest($officeRpsId);
@@ -838,7 +762,7 @@ class FoundationsService
         return $this->getSingleResult($getOfficeRequest);
     }
 
-    public function getOfficesPaged(array $queryParameters = []): ?array
+    public function getOffices(array $queryParameters = []): ?array
     {
         $officesRequest = new GetOfficesRequest();
 
@@ -861,17 +785,7 @@ class FoundationsService
             $applicantsRequest->query()->add($key, $value);
         }
 
-        $response = $this->connector->send($applicantsRequest);
-
-        if (! $response->successful()) {
-            $this->handleRequestFail($applicantsRequest, $response);
-            return null;
-        }
-
-        /** @var ?array<array<string,string|array<string>>> $applicants */
-        $applicants = json_decode($response->body(), true) ?? null;
-
-        return $applicants;
+        return $this->getPaginatedResults($applicantsRequest);
     }
 
     /**
@@ -912,17 +826,7 @@ class FoundationsService
             $tenanciesRequest->query()->add($key, $value);
         }
 
-        $response = $this->connector->send($tenanciesRequest);
-
-        if (! $response->successful()) {
-            $this->handleRequestFail($tenanciesRequest, $response);
-            return null;
-        }
-
-        /** @var ?array<array<string,string|array<string>>> $tenancies */
-        $tenancies = json_decode($response->body(), true) ?? null;
-
-        return $tenancies;
+        return $this->getPaginatedResults($tenanciesRequest);
     }
 
     public function getTenancy(string $tenancyRpsId, array $queryParameters = []): ?array
@@ -959,17 +863,7 @@ class FoundationsService
             $vendorsRequest->query()->add($key, $value);
         }
 
-        $response = $this->connector->send($vendorsRequest);
-
-        if (! $response->successful()) {
-            $this->handleRequestFail($vendorsRequest, $response);
-            return null;
-        }
-
-        /** @var ?array<array<string,string|array<string>>> $vendors */
-        $vendors = json_decode($response->body(), true) ?? null;
-
-        return $vendors;
+        return $this->getPaginatedResults($vendorsRequest);
     }
 
     public function getVendor(string $ownerRpsId, array $queryParameters = []): ?array
@@ -995,17 +889,7 @@ class FoundationsService
             $landlordsRequest->query()->add($key, $value);
         }
 
-        $response = $this->connector->send($landlordsRequest);
-
-        if (! $response->successful()) {
-            $this->handleRequestFail($landlordsRequest, $response);
-            return null;
-        }
-
-        /** @var ?array<array<string,string|array<string>>> $landlords */
-        $landlords = json_decode($response->body(), true) ?? null;
-
-        return $landlords;
+        return $this->getPaginatedResults($landlordsRequest);
     }
 
     public function getLandlord(string $ownerRpsId, array $queryParameters = []): ?array
