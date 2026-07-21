@@ -290,6 +290,45 @@ class FoundationsService
     }
 
     /**
+     * @param  array<string,string>  $changes
+     */
+    public function updateApplicant(string $applicantId, array $changes): bool
+    {
+        $applicantRequest = new GetApplicantRequest($applicantId);
+
+        $response = $this->connector->send($applicantRequest);
+
+        if (! $response->successful()) {
+            $this->handleRequestFail($applicantRequest, $response);
+            return false;
+        }
+
+        /** @var array<string,string> $applicantData */
+        $applicantData = $response->array();
+        $etag = $applicantData['_eTag'] ?? null;
+
+        if (! isset($etag)) {
+            Log::error('Could not find etag for contact', ['contactData' => $applicantData]);
+
+            return false;
+        }
+
+        $updateRequest = new UpdateApplicantRequest($applicantId, $etag);
+
+        foreach ($changes as $key => $value) {
+            $updateRequest->body()->add($key, $value);
+        }
+
+        $response = $this->connector->send($updateRequest);
+
+        if (! $response->successful()) {
+            $this->handleRequestFail($updateRequest, $response);
+        }
+
+        return $response->successful();
+    }
+
+    /**
      * @param  array<string,string|int>  $queryParameters
      * @return ?array<array<string,string|array<string>>>
      */
@@ -673,45 +712,6 @@ class FoundationsService
         $applicant = json_decode($response->body(), true) ?? null;
 
         return $applicant;
-    }
-
-    /**
-     * @param  array<string,string>  $changes
-     */
-    public function updateApplicant(string $applicantId, array $changes): bool
-    {
-        $applicantRequest = new GetApplicantRequest($applicantId);
-
-        $response = $this->connector->send($applicantRequest);
-
-        if (! $response->successful()) {
-            $this->handleRequestFail($applicantRequest, $response);
-            return false;
-        }
-
-        /** @var array<string,string> $applicantData */
-        $applicantData = $response->array();
-        $etag = $applicantData['_eTag'] ?? null;
-
-        if (! isset($etag)) {
-            Log::error('Could not find etag for contact', ['contactData' => $applicantData]);
-
-            return false;
-        }
-
-        $updateRequest = new UpdateApplicantRequest($applicantId, $etag);
-
-        foreach ($changes as $key => $value) {
-            $updateRequest->body()->add($key, $value);
-        }
-
-        $response = $this->connector->send($updateRequest);
-
-        if (! $response->successful()) {
-            $this->handleRequestFail($updateRequest, $response);
-        }
-
-        return $response->successful();
     }
 
     /**
