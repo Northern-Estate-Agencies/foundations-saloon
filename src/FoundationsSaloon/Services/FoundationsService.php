@@ -14,6 +14,7 @@ use FoundationsSaloon\Requests\GetCompaniesRequest;
 use FoundationsSaloon\Requests\GetCompanyRequest;
 use FoundationsSaloon\Requests\GetContactRequest;
 use FoundationsSaloon\Requests\GetContactsRequest;
+use FoundationsSaloon\Requests\GetConveyancingRequest;
 use FoundationsSaloon\Requests\GetDocumentDownloadRequest;
 use FoundationsSaloon\Requests\GetDocumentRequest;
 use FoundationsSaloon\Requests\GetDocumentsRequest;
@@ -743,6 +744,17 @@ class FoundationsService
         }
 
         return $this->getPaginatedResults($offersRequest);
+    }
+
+    public function getSalesProgress(string $offerId, array $queryParameters = []): ?array
+    {
+        $salesProgressRequest = new GetConveyancingRequest($offerId);
+
+        foreach ($queryParameters as $key => $value) {
+            $salesProgressRequest->query()->add($key, $value);
+        }
+
+        return $this->getSingleResult($salesProgressRequest);
     }
 
     /**
