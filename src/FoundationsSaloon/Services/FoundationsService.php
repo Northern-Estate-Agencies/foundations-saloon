@@ -1,7 +1,10 @@
 <?php
 
 use FoundationsSaloon\FoundationsConnector;
+use Illuminate\Support\Facades\Log;
 use Saloon\Http\Auth\AccessTokenAuthenticator;
+use Saloon\Http\Request;
+use Saloon\Http\Response;
 
 class FoundationsService
 {
@@ -66,5 +69,42 @@ class FoundationsService
             $this->authenticator = $authenticator;
             $this->connector->authenticate($this->authenticator);
         }
+    }
+
+    private function isRecordArchived(Request $request): bool
+    {
+        $request->query()->add('fromArchive', 'true');
+
+        $response = $this->connector->send($request);
+
+        if (! $response->successful()) {
+            $this->handleRequestFail($request, $response);
+            return false;
+        }
+
+        $resultsArray = json_decode($response->body(), true);
+        $resultsArray = $resultsArray['_embedded'] ?? [];
+
+        return count($resultsArray) > 0;
+    }
+
+    private function handleRequestFail(Request $request, Response $response): void
+    {
+        $responseCode = $response->status();
+
+        $errorContext = [
+            'requestClass' => get_class($request),
+            'requestQuery' => $request->query()?->all() ?? [],
+            'requestEndpoint' => $request->resolveEndpoint(),
+            'responseStatusCode' => $response->status(),
+            'responseBody' => $response->body(),
+        ];
+
+        if ($responseCode >= 500) {
+            Log::info('Request to Foundations failed due to Reapit service error', $errorContext);
+            return;
+        }
+
+        Log::error('Request to Foundations failed', $errorContext);
     }
 }
