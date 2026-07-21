@@ -1,6 +1,7 @@
 <?php
 
 use FoundationsSaloon\FoundationsConnector;
+use FoundationsSaloon\Requests\GetAreasRequest;
 use FoundationsSaloon\Requests\GetJournalEntriesRequest;
 use FoundationsSaloon\Requests\PostJournalEntriesRequest;
 use Illuminate\Support\Facades\Log;
@@ -140,6 +141,21 @@ class FoundationsService
         }
 
         return $this->getPaginatedResults($journalEntriesRequest);
+    }
+
+    /**
+     * @param  array<string,string|int|array<string>>  $queryParameters
+     * @return ?array<array<string,string|array<string>>>
+     */
+    public function getAreas(array $queryParameters = []): ?array
+    {
+        $areasRequest = new GetAreasRequest();
+
+        foreach ($queryParameters as $key => $value) {
+            $areasRequest->query()->add($key, $value);
+        }
+
+        return $this->getPaginatedResults($areasRequest);
     }
 
     /** @return ?array<array<string,string|array<string>>> $results */
