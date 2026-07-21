@@ -10,6 +10,7 @@ use FoundationsSaloon\Requests\GetCompaniesRequest;
 use FoundationsSaloon\Requests\GetCompanyRequest;
 use FoundationsSaloon\Requests\GetContactsRequest;
 use FoundationsSaloon\Requests\GetJournalEntriesRequest;
+use FoundationsSaloon\Requests\GetLandlordRequest;
 use FoundationsSaloon\Requests\GetLandlordsRelationshipsRequest;
 use FoundationsSaloon\Requests\GetLandlordsRequest;
 use FoundationsSaloon\Requests\GetNegotiatorRequest;
@@ -17,6 +18,7 @@ use FoundationsSaloon\Requests\GetOfficesRequest;
 use FoundationsSaloon\Requests\GetPropertiesRequest;
 use FoundationsSaloon\Requests\GetPropertyRequest;
 use FoundationsSaloon\Requests\GetTenanciesRequest;
+use FoundationsSaloon\Requests\GetTenancyRequest;
 use FoundationsSaloon\Requests\GetVendorRequest;
 use FoundationsSaloon\Requests\GetVendorsRelationshipsRequest;
 use FoundationsSaloon\Requests\GetVendorsRequest;
@@ -740,6 +742,24 @@ class FoundationsService
         return $tenancies;
     }
 
+    public function getTenancy(string $tenancyRpsId, array $queryParameters = []): ?array
+    {
+        $tenancyRequest = new GetTenancyRequest($tenancyRpsId);
+
+        foreach ($queryParameters as $key => $value) {
+            $tenancyRequest->query()->add($key, $value);
+        }
+
+        $response = $this->connector->send($tenancyRequest);
+
+        if (! $response->successful()) {
+            $this->handleRequestFail($tenancyRequest, $response);
+            return null;
+        }
+
+        return json_decode($response->body(), true);
+    }
+
     /**
      * @param  array<string,string|int>  $queryParameters
      * @return ?array<array<string,string|array<string>>>
@@ -811,6 +831,29 @@ class FoundationsService
         $landlords = json_decode($response->body(), true) ?? null;
 
         return $landlords;
+    }
+
+    public function getLandlord(string $ownerRpsId, array $queryParameters = []): ?array
+    {
+        $landlordRequest = new GetLandlordRequest($ownerRpsId);
+
+        $landlordRequest->query()->add('id', $ownerRpsId);
+
+        foreach ($queryParameters as $key => $value) {
+            $landlordRequest->query()->add($key, $value);
+        }
+
+        $response = $this->connector->send($landlordRequest);
+
+        if (! $response->successful()) {
+            $this->handleRequestFail($landlordRequest, $response);
+            return null;
+        }
+
+        /** @var ?array<array<string,string|array<string>>> $landlord */
+        $landlord = json_decode($response->body(), true) ?? null;
+
+        return $landlord;
     }
 
     public function doesContactConsentToMarketing(string $contactRpsId): bool
