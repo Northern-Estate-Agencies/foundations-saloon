@@ -25,8 +25,6 @@ class FoundationsConnector extends Connector implements HasPagination
 
     public ?int $tries = 1;
 
-    private bool $useUnsubFlowCredentials = false;
-
     public function resolveBaseUrl(): string
     {
         return 'https://platform.reapit.cloud/';
@@ -40,8 +38,6 @@ class FoundationsConnector extends Connector implements HasPagination
 
     public function useUnsubFlowCredentials(bool $useUnsub = true): void
     {
-        $this->useUnsubFlowCredentials = $useUnsub;
-
         $clientId = config('services.reapit.unsub_client_id') ?? 'XYX';
         $clientSecret = config('services.reapit.unsub_client_secret') ?? 'XYX';
 
@@ -90,11 +86,6 @@ class FoundationsConnector extends Connector implements HasPagination
     {
         $clientId = config('services.reapit.client_id') ?? 'XYX';
         $clientSecret = config('services.reapit.client_secret') ?? 'XYX';
-
-        if($this->useUnsubFlowCredentials){           
-            $clientId = config('services.reapit.unsub_client_id') ?? 'XYX';
-            $clientSecret = config('services.reapit.unsub_client_secret') ?? 'XYX';
-        }
 
         return OAuthConfig::make()
             ->setClientId($clientId)
