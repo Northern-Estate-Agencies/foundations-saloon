@@ -107,38 +107,13 @@ class FoundationsService
         }
     }
 
-    public function storeContactJournalEntry(string $contactId, string $message): Response
+    public function storeJournalEntry(string $typeId, string $assocatiedType, string $contactId, string $message): Response
     {
         $request = new PostJournalEntriesRequest(
-            'MI',
-            'contact',
-            $contactId,
-            $message
-        );
-
-        return $this->connector->send($request);
-    }
-
-    public function storeApplicantJournalEntry(string $applicantId, string $message): Response
-    {
-        $request = new PostJournalEntriesRequest(
-            typeId: 'MI',
-            associatedType: 'applicant',
-            associatedId: $applicantId,
-            description: $message,
-        );
-
-        return $this->connector->send($request);
-    }
-
-    public function storePropertyMatchJournalEntry(string $applicantId, string $propertyId): Response
-    {
-        $request = new PostJournalEntriesRequest(
-            typeId: 'MA',
-            associatedType: 'applicant',
-            associatedId: $applicantId,
-            description: 'Matched Via Mailflow',
-            propertyId: $propertyId
+            typeId: $typeId,
+            associatedType: $assocatiedType,
+            associatedId: $contactId,
+            description: $message
         );
 
         return $this->connector->send($request);
