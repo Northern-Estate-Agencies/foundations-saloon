@@ -77,24 +77,6 @@ class FoundationsService
         $this->connector->setReapitCustomer($customer);
     }
 
-    public function useUnsubFlowCredentials(): void
-    {
-        $connector = new FoundationsConnector(
-            useUnsubFlowCredentials: true
-        );
-
-        $this->setUpAuthentication($connector);
-    }
-
-    public function useJournalEntryAppCredentials(): void
-    {
-        $connector = new FoundationsConnector(
-            useJournalEntryAppCredentials: true
-        );
-
-        $this->setUpAuthentication($connector);
-    }
-
     /*
         This is only to be used in rare cases where we think a single method
         or function may run for longer than a token's lifetime.
