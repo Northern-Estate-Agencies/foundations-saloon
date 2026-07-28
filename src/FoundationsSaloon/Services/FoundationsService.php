@@ -107,23 +107,6 @@ class FoundationsService
         }
     }
 
-    private function isRecordArchived(Request $request): bool
-    {
-        $request->query()->add('fromArchive', 'true');
-
-        $response = $this->connector->send($request);
-
-        if (! $response->successful()) {
-            $this->handleRequestFail($request, $response);
-            return false;
-        }
-
-        $resultsArray = json_decode($response->body(), true);
-        $resultsArray = $resultsArray['_embedded'] ?? [];
-
-        return count($resultsArray) > 0;
-    }
-
     public function storeContactJournalEntry(string $contactId, string $message): Response
     {
         $request = new PostJournalEntriesRequest(
@@ -161,9 +144,6 @@ class FoundationsService
         return $this->connector->send($request);
     }
 
-    /**
-     * @param  array<string,string>  $changes
-     */
     public function updateContact(string $contactRpsId, array $changes): bool
     {
         $contactRequest = new GetContactsRequest();
@@ -209,9 +189,6 @@ class FoundationsService
         return $response->successful();
     }
 
-    /**
-     * @param  array<string,string>  $changes
-     */
     public function updateAppointment(string $appointmentId, array $changes): bool
     {
         $appointmentRequest = new GetAppointmentRequest($appointmentId);
@@ -245,9 +222,6 @@ class FoundationsService
         return $response->successful();
     }
 
-    /**
-     * @param  array<string,string>  $changes
-     */
     public function updateCompany(string $companyRpsId, array $changes): bool
     {
         $companyRequest = new GetCompaniesRequest();
@@ -293,9 +267,6 @@ class FoundationsService
         return $response->successful();
     }
 
-    /**
-     * @param  array<string,string>  $changes
-     */
     public function updateProperty(string $propertyRpsId, array $changes): bool
     {
         $propertyRequest = new GetPropertiesRequest();
@@ -339,9 +310,6 @@ class FoundationsService
         return $response->successful();
     }
 
-    /**
-     * @param  array<string,string>  $changes
-     */
     public function updateApplicant(string $applicantId, array $changes): bool
     {
         $applicantRequest = new GetApplicantRequest($applicantId);
@@ -378,9 +346,6 @@ class FoundationsService
         return $response->successful();
     }
 
-    /**
-     * @param  array<string,string>  $changes
-     */
     public function updateWorksOrder(string $worksOrderRpsId, array $changes): bool
     {
         $worksOrderRequest = new GetWorksOrderRequest($worksOrderRpsId);
@@ -417,10 +382,6 @@ class FoundationsService
         return $response->successful();
     }
 
-    /**
-     * @param  array<string,string|int>  $queryParameters
-     * @return ?array<array<string,string|array<string>>>
-     */
     public function getJournalEntries(array $queryParameters = []): ?array
     {
         $journalEntriesRequest = new GetJournalEntriesRequest();
@@ -432,10 +393,6 @@ class FoundationsService
         return $this->getPaginatedResults($journalEntriesRequest);
     }
 
-    /**
-     * @param array<string,string|int> $queryParameters
-     * @return ?array<array<string,string|array<string>>>
-     */
     public function getPropertyMarketingData(string $propertyId, array $queryParameters = []): ?array
     {
         $propertyMarketingDataRequest = new GetPropertyMarketingDataRequest($propertyId);
@@ -447,10 +404,6 @@ class FoundationsService
         return $this->getSingleResult($propertyMarketingDataRequest);
     }
 
-    /**
-     * @param  array<string,string|int|array<string>>  $queryParameters
-     * @return ?array<array<string,string|array<string>>>
-     */
     public function getAreas(array $queryParameters = []): ?array
     {
         $areasRequest = new GetAreasRequest();
@@ -473,11 +426,6 @@ class FoundationsService
         return $this->getPaginatedResults($companiesRequest);
     }
 
-    /**
-     * @param  string  $ownerRpsId
-     * @param  bool  $isVendor
-     * @return array<string, string>|null
-     */
     public function getPropertyOwnerRelationship($ownerRpsId, $isVendor): ?array
     {
         if (($ownerRpsId ?? '') === '') {
@@ -534,11 +482,6 @@ class FoundationsService
         return $this->getSingleResult($companyRequest);
     }
 
-    /**
-     * @param  string  $ownerRpsId
-     * @param  bool  $isVendor
-     * @return array<string, string>|null
-     */
     public function getPropertyOwner($ownerRpsId, $isVendor): ?array
     {
         if ($isVendor) {
@@ -575,10 +518,6 @@ class FoundationsService
         return $this->getPaginatedResults($contactRequest);
     }
 
-    /**
-     * @param  array<string,string|int,array<string>> $queryParameters
-     * @return ?array<array<string,string|array<string>>>
-     */
     public function getProperties(array $queryParameters = []): ?array
     {
         $propertiesRequest = new GetPropertiesRequest();
@@ -590,10 +529,6 @@ class FoundationsService
         return $this->getPaginatedResults($propertiesRequest);
     }
 
-    /**
-     * @param array<string,string|int> $queryParameters
-     * @return ?array<array<string,string|array<string>>>
-     */
     public function getProperty(string $propertyId, array $queryParameters = []): ?array
     {
         $propertyRequest = new GetPropertyRequest($propertyId);
@@ -761,10 +696,6 @@ class FoundationsService
         return $this->getSingleResult($salesProgressRequest);
     }
 
-    /**
-     * @param array<string,string|int> $queryParameters
-     * @return ?array<array<string,string|array<string>>>
-     */
     public function getArea(string $areaId, array $queryParameters = []): ?array
     {
         $areaRequest = new GetAreaRequest($areaId);
@@ -776,10 +707,6 @@ class FoundationsService
         return $this->getSingleResult($areaRequest);
     }
 
-    /**
-     * @param array<string,string|int> $queryParameters
-     * @return ?array<array<string,string|array<string>>>
-     */
     public function getNegotiator(string $negotiatorId, array $queryParameters = []): ?array
     {
         $negotiatorRequest = new GetNegotiatorRequest($negotiatorId);
@@ -824,10 +751,6 @@ class FoundationsService
         return $this->getPaginatedResults($officesRequest);
     }
 
-    /**
-     * @param  array<string,string|int|array<string>>  $queryParameters
-     * @return ?array<array<string,string|array<string>>>
-     */
     public function getApplicants(array $queryParameters = []): ?array
     {
         $applicantsRequest = new GetApplicantsRequest();
@@ -839,10 +762,6 @@ class FoundationsService
         return $this->getPaginatedResults($applicantsRequest);
     }
 
-    /**
-     * @param  array<string,string|int>  $queryParameters
-     * @return ?array<array<string,string|array<string>>>
-     */
     public function getApplicant(string $applicantId, array $queryParameters = []): ?array
     {
         $applicantRequest = new GetApplicantRequest($applicantId);
@@ -865,10 +784,6 @@ class FoundationsService
         return $this->getPaginatedResults($transactionsRequest);
     }
 
-    /**
-     * @param  array<string,string|int>  $queryParameters
-     * @return ?array<array<string,string|array<string>>>
-     */
     public function getTenancies(array $queryParameters = []): ?array
     {
         $tenanciesRequest = new GetTenanciesRequest();
@@ -902,10 +817,6 @@ class FoundationsService
         return $this->getPaginatedResults($tenancyChecksRequest);
     }
 
-    /**
-     * @param  array<string,string|int>  $queryParameters
-     * @return ?array<array<string,string|array<string>>>
-     */
     public function getVendors(array $queryParameters = []): ?array
     {
         $vendorsRequest = new GetVendorsRequest();
@@ -928,10 +839,6 @@ class FoundationsService
         return $this->getSingleResult($vendorRequest);
     }
 
-    /**
-     * @param  array<string,string|int>  $queryParameters
-     * @return ?array<array<string,string|array<string>>>
-     */
     public function getLandlords(array $queryParameters = []): ?array
     {
         $landlordsRequest = new GetLandlordsRequest();
@@ -983,20 +890,6 @@ class FoundationsService
         return in_array($marketingConsent, ['given', 'grant']);
     }
 
-    /**
-     * Create a new contact.
-     *
-     * @param  string  $title  The title of the contact.
-     * @param  string  $forename  The forename of the contact.
-     * @param  string  $surname  The surname of the contact.
-     * @param  string  $email  The email address of the contact.
-     * @param  string  $mobilePhone  The mobile phone number of the contact.
-     * @param  string  $marketingConsent  The marketing consent status of the contact.
-     * @param  bool  $active  The active status of the contact.
-     * @param  array  $officeIds  The IDs of the offices associated with the contact.
-     * @param  array  $negotiatorIds  The IDs of the negotiators associated with the contact.
-     * @return array|null The created contact details or null if the creation failed.
-     */
     public function createContact(
         string $title,
         string $forename,
