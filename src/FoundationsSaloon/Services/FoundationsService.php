@@ -121,240 +121,74 @@ class FoundationsService
 
     public function updateContact(string $contactRpsId, array $changes): bool
     {
-        $contactRequest = new GetContactsRequest();
-        $contactRequest->query()->add('id', $contactRpsId);
+        $contactRequest = new GetContactRequest($contactRpsId);
 
-        $response = $this->connector->send($contactRequest);
-
-        if (! $response->successful()) {
-            $this->handleRequestFail($contactRequest, $response);
-            return false;
-        }
-
-        /** @var array<array<string,string>> $embeddedData */
-        $embeddedData = $response->collect()->get('_embedded');
-        $contactData = collect($embeddedData)->first();
-
-        if (!$contactData) {
-            Log::error('Could not get a contact', ['contactRpsId' => $contactRpsId]);
-
-            return false;
-        }
-
-        $etag = $contactData['_eTag'] ?? null;
-
-        if (! isset($etag)) {
-            Log::error('Could not find etag for contact', ['contactData' => $contactData]);
-
-            return false;
-        }
-
-        $updateRequest = new UpdateContactRequest($contactRpsId, $etag);
-
-        foreach ($changes as $key => $value) {
-            $updateRequest->body()->add($key, $value);
-        }
-
-        $response = $this->connector->send($updateRequest);
-
-        if (! $response->successful()) {
-            $this->handleRequestFail($updateRequest, $response);
-        }
-
-        return $response->successful();
+        return $this->updateEntityWithEtag(
+            $contactRequest,
+            $contactRpsId,
+            $changes,
+            static fn(string $id, string $eTag, array $payload): Request => new UpdateContactRequest($id, $eTag, $payload)
+        );
     }
 
     public function updateAppointment(string $appointmentId, array $changes): bool
     {
         $appointmentRequest = new GetAppointmentRequest($appointmentId);
 
-        $response = $this->connector->send($appointmentRequest);
-
-        if (! $response->successful()) {
-            $this->handleRequestFail($appointmentRequest, $response);
-            return false;
-        }
-
-        /** @var array<string,string> $appointmentData */
-        $appointmentData = $response->array();
-        $etag = $appointmentData['_eTag'] ?? null;
-
-        if (! isset($etag)) {
-            Log::error('Could not find etag for contact', ['contactData' => $appointmentData]);
-            return false;
-        }
-
-        $updateRequest = new UpdateAppointmentRequest($appointmentId, $etag);
-        foreach ($changes as $key => $value) {
-            $updateRequest->body()->add($key, $value);
-        }
-
-        $response = $this->connector->send($updateRequest);
-        if (! $response->successful()) {
-            $this->handleRequestFail($updateRequest, $response);
-        }
-
-        return $response->successful();
+        return $this->updateEntityWithEtag(
+            $appointmentRequest,
+            $appointmentId,
+            $changes,
+            static fn(string $id, string $eTag, array $payload): Request => new UpdateAppointmentRequest($id, $eTag, $payload)
+        );
     }
 
     public function updateCompany(string $companyRpsId, array $changes): bool
     {
-        $companyRequest = new GetCompaniesRequest();
-        $companyRequest->query()->add('id', $companyRpsId);
+        $companyRequest = new GetCompanyRequest($companyRpsId);
 
-        $response = $this->connector->send($companyRequest);
-
-        if (! $response->successful()) {
-            $this->handleRequestFail($companyRequest, $response);
-            return false;
-        }
-
-        /** @var array<array<string,string>> $embeddedData */
-        $embeddedData = $response->collect()->get('_embedded');
-        $companyData = collect($embeddedData)->first();
-
-        if (!$companyData) {
-            Log::error('Could not get a company', ['companyRpsId' => $companyRpsId]);
-
-            return false;
-        }
-
-        $etag = $companyData['_eTag'] ?? null;
-
-        if (! isset($etag)) {
-            Log::error('Could not find etag for company', ['companyData' => $companyData]);
-
-            return false;
-        }
-
-        $updateRequest = new UpdateCompanyRequest($companyRpsId, $etag);
-
-        foreach ($changes as $key => $value) {
-            $updateRequest->body()->add($key, $value);
-        }
-
-        $response = $this->connector->send($updateRequest);
-
-        if (! $response->successful()) {
-            $this->handleRequestFail($updateRequest, $response);
-        }
-
-        return $response->successful();
+        return $this->updateEntityWithEtag(
+            $companyRequest,
+            $companyRpsId,
+            $changes,
+            static fn(string $id, string $eTag, array $payload): Request => new UpdateCompanyRequest($id, $eTag, $payload)
+        );
     }
 
     public function updateProperty(string $propertyRpsId, array $changes): bool
     {
-        $propertyRequest = new GetPropertiesRequest();
-        $propertyRequest->query()->add('id', $propertyRpsId);
+        $propertyRequest = new GetPropertyRequest($propertyRpsId);
 
-        $response = $this->connector->send($propertyRequest);
-
-        if (! $response->successful()) {
-            $this->handleRequestFail($propertyRequest, $response);
-            return false;
-        }
-
-        /** @var array<array<string,string>> $embeddedData */
-        $embeddedData = $response->collect()->get('_embedded');
-        $propertyData = collect($embeddedData)->first();
-
-        if (!$propertyData) {
-            Log::error('Could not get a property', ['propertyRpsId' => $propertyRpsId]);
-
-            return false;
-        }
-
-        $etag = $propertyData['_eTag'] ?? null;
-        if (! isset($etag)) {
-            Log::error('Could not find etag for property', ['propertyData' => $propertyData]);
-            return false;
-        }
-
-        $updateRequest = new UpdatePropertyRequest($propertyRpsId, $etag);
-
-        foreach ($changes as $key => $value) {
-            $updateRequest->body()->add($key, $value);
-        }
-
-        $response = $this->connector->send($updateRequest);
-
-        if (! $response->successful()) {
-            $this->handleRequestFail($updateRequest, $response);
-        }
-
-        return $response->successful();
+        return $this->updateEntityWithEtag(
+            $propertyRequest,
+            $propertyRpsId,
+            $changes,
+            static fn(string $id, string $eTag, array $payload): Request => new UpdatePropertyRequest($id, $eTag, $payload)
+        );
     }
 
     public function updateApplicant(string $applicantId, array $changes): bool
     {
         $applicantRequest = new GetApplicantRequest($applicantId);
 
-        $response = $this->connector->send($applicantRequest);
-
-        if (! $response->successful()) {
-            $this->handleRequestFail($applicantRequest, $response);
-            return false;
-        }
-
-        /** @var array<string,string> $applicantData */
-        $applicantData = $response->array();
-        $etag = $applicantData['_eTag'] ?? null;
-
-        if (! isset($etag)) {
-            Log::error('Could not find etag for contact', ['contactData' => $applicantData]);
-
-            return false;
-        }
-
-        $updateRequest = new UpdateApplicantRequest($applicantId, $etag);
-
-        foreach ($changes as $key => $value) {
-            $updateRequest->body()->add($key, $value);
-        }
-
-        $response = $this->connector->send($updateRequest);
-
-        if (! $response->successful()) {
-            $this->handleRequestFail($updateRequest, $response);
-        }
-
-        return $response->successful();
+        return $this->updateEntityWithEtag(
+            $applicantRequest,
+            $applicantId,
+            $changes,
+            static fn(string $id, string $eTag, array $payload): Request => new UpdateApplicantRequest($id, $eTag, $payload)
+        );
     }
 
     public function updateWorksOrder(string $worksOrderRpsId, array $changes): bool
     {
         $worksOrderRequest = new GetWorksOrderRequest($worksOrderRpsId);
 
-        $response = $this->connector->send($worksOrderRequest);
-
-        if (! $response->successful()) {
-            Log::error('Error retrieving works order', ['response' => $response->body(), 'status' => $response->status()]);
-
-            return false;
-        }
-
-        $worksOrderData = $response->collect()->toArray();
-        $etag = $worksOrderData['_eTag'] ?? null;
-
-        if (! isset($etag)) {
-            Log::error('Could not find etag for contact', ['contactData' => $worksOrderData]);
-
-            return false;
-        }
-
-        $updateRequest = new UpdateWorksOrderRequest($worksOrderRpsId, $etag);
-
-        foreach ($changes as $key => $value) {
-            $updateRequest->body()->add($key, $value);
-        }
-
-        $response = $this->connector->send($updateRequest);
-
-        if (! $response->successful()) {
-            $this->handleRequestFail($updateRequest, $response);
-        }
-
-        return $response->successful();
+        return $this->updateEntityWithEtag(
+            $worksOrderRequest,
+            $worksOrderRpsId,
+            $changes,
+            static fn(string $id, string $eTag, array $payload): Request => new UpdateWorksOrderRequest($id, $eTag, $payload)
+        );
     }
 
     public function getJournalEntries(array $queryParameters = []): ?array
@@ -766,6 +600,38 @@ class FoundationsService
     protected function logConnection(Request $request): void
     {
         // stub
+    }
+
+    /**
+     * @param callable(string, string, array): Request $buildUpdateRequest
+     */
+    protected function updateEntityWithEtag(Request $request, string $rpsId, array $changes, callable $buildUpdateRequest): bool
+    {
+
+        $response = $this->connector->send($request);
+
+        if (! $response->successful()) {
+            $this->handleRequestFail($request, $response);
+            return false;
+        }
+
+        $propertyData = $response->array();
+        $etag = $propertyData['_eTag'] ?? null;
+
+        if (! isset($etag)) {
+            Log::error('Could not find etag for property', ['propertyData' => $propertyData]);
+            return false;
+        }
+
+        $updateRequest = $buildUpdateRequest($rpsId, $etag, $changes);
+
+        $response = $this->connector->send($updateRequest);
+
+        if (! $response->successful()) {
+            $this->handleRequestFail($updateRequest, $response);
+        }
+
+        return $response->successful();
     }
 
     protected function getSingleResult(Request $request, array $queryParameters = []): ?array
