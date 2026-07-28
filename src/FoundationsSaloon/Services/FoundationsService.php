@@ -386,44 +386,28 @@ class FoundationsService
     {
         $journalEntriesRequest = new GetJournalEntriesRequest();
 
-        foreach ($queryParameters as $key => $value) {
-            $journalEntriesRequest->query()->add($key, $value);
-        }
-
-        return $this->getPaginatedResults($journalEntriesRequest);
+        return $this->getPaginatedResults($journalEntriesRequest, $queryParameters);
     }
 
     public function getPropertyMarketingData(string $propertyId, array $queryParameters = []): ?array
     {
         $propertyMarketingDataRequest = new GetPropertyMarketingDataRequest($propertyId);
 
-        foreach ($queryParameters as $key => $value) {
-            $propertyMarketingDataRequest->query()->add($key, $value);
-        }
-
-        return $this->getSingleResult($propertyMarketingDataRequest);
+        return $this->getSingleResult($propertyMarketingDataRequest, $queryParameters);
     }
 
     public function getAreas(array $queryParameters = []): ?array
     {
         $areasRequest = new GetAreasRequest();
 
-        foreach ($queryParameters as $key => $value) {
-            $areasRequest->query()->add($key, $value);
-        }
-
-        return $this->getPaginatedResults($areasRequest);
+        return $this->getPaginatedResults($areasRequest, $queryParameters);
     }
 
     public function getCompanies(array $queryParameters = []): ?array
     {
         $companiesRequest = new GetCompaniesRequest;
 
-        foreach ($queryParameters as $key => $value) {
-            $companiesRequest->query()->add($key, $value);
-        }
-
-        return $this->getPaginatedResults($companiesRequest);
+        return $this->getPaginatedResults($companiesRequest, $queryParameters);
     }
 
     public function getPropertyOwnerRelationship($ownerRpsId, $isVendor): ?array
@@ -464,22 +448,14 @@ class FoundationsService
     {
         $contactRequest = new GetContactRequest($contactRpsId);
 
-        foreach ($queryParameters as $key => $value) {
-            $contactRequest->query()->add($key, $value);
-        }
-
-        return $this->getSingleResult($contactRequest);
+        return $this->getSingleResult($contactRequest, $queryParameters);
     }
 
     public function getCompany(string $companyId, array $queryParameters = []): ?array
     {
         $companyRequest = new GetCompanyRequest($companyId);
 
-        foreach ($queryParameters as $key => $value) {
-            $companyRequest->query()->add($key, $value);
-        }
-
-        return $this->getSingleResult($companyRequest);
+        return $this->getSingleResult($companyRequest, $queryParameters);
     }
 
     public function getPropertyOwner($ownerRpsId, $isVendor): ?array
@@ -511,55 +487,35 @@ class FoundationsService
     {
         $contactRequest = new GetContactsRequest();
 
-        foreach ($queryParameters as $key => $value) {
-            $contactRequest->query()->add($key, $value);
-        }
-
-        return $this->getPaginatedResults($contactRequest);
+        return $this->getPaginatedResults($contactRequest, $queryParameters);
     }
 
     public function getProperties(array $queryParameters = []): ?array
     {
         $propertiesRequest = new GetPropertiesRequest();
 
-        foreach ($queryParameters as $key => $value) {
-            $propertiesRequest->query()->add($key, $value);
-        }
-
-        return $this->getPaginatedResults($propertiesRequest);
+        return $this->getPaginatedResults($propertiesRequest, $queryParameters);
     }
 
     public function getProperty(string $propertyId, array $queryParameters = []): ?array
     {
         $propertyRequest = new GetPropertyRequest($propertyId);
 
-        foreach ($queryParameters as $key => $value) {
-            $propertyRequest->query()->add($key, $value);
-        }
-
-        return $this->getSingleResult($propertyRequest);
+        return $this->getSingleResult($propertyRequest, $queryParameters);
     }
 
     public function getPropertyCertificates(string $propertyId, array $queryParameters = []): ?array
     {
         $propertyCertificatesRequest = new GetPropertyCertificatesRequest($propertyId);
 
-        foreach ($queryParameters as $key => $value) {
-            $propertyCertificatesRequest->query()->add($key, $value);
-        }
-
-        return $this->getPaginatedResults($propertyCertificatesRequest);
+        return $this->getPaginatedResults($propertyCertificatesRequest, $queryParameters);
     }
 
     public function getTenancyExtensions(string $tenancyId, array $queryParameters = []): ?array
     {
         $tenancyExtensionsRequest = new GetTenancyExtensionsRequest($tenancyId);
 
-        foreach ($queryParameters as $key => $value) {
-            $tenancyExtensionsRequest->query()->add($key, $value);
-        }
-
-        return $this->getPaginatedResults($tenancyExtensionsRequest);
+        return $this->getPaginatedResults($tenancyExtensionsRequest, $queryParameters);
     }
 
     public function getCertificateTypes(): ?array
@@ -573,22 +529,14 @@ class FoundationsService
     {
         $documentsRequest = new GetDocumentsRequest;
 
-        foreach ($queryParameters as $key => $value) {
-            $documentsRequest->query()->add($key, $value);
-        }
-
-        return $this->getPaginatedResults($documentsRequest);
+        return $this->getPaginatedResults($documentsRequest, $queryParameters);
     }
 
     public function getDocument(string $documentRpsId, array $queryParameters = []): ?array
     {
         $documentRequest = new GetDocumentRequest($documentRpsId);
 
-        foreach ($queryParameters as $key => $value) {
-            $documentRequest->query()->add($key, $value);
-        }
-
-        return $this->getSingleResult($documentRequest);
+        return $this->getSingleResult($documentRequest, $queryParameters);
     }
 
     public function getDocumentDownload(string $documentId): ?string
@@ -613,44 +561,28 @@ class FoundationsService
     {
         $appointmentsRequest = new GetAppointmentsRequest;
 
-        foreach ($queryParameters as $key => $value) {
-            $appointmentsRequest->query()->add($key, $value);
-        }
-
-        return $this->getPaginatedResults($appointmentsRequest);
+        return $this->getPaginatedResults($appointmentsRequest, $queryParameters);
     }
 
     public function getAppointment(string $appointmentId, array $queryParameters = []): ?array
     {
         $appointmentRequest = new GetAppointmentRequest($appointmentId);
 
-        foreach ($queryParameters as $key => $value) {
-            $appointmentRequest->query()->add($key, $value);
-        }
-        
-        return $this->getSingleResult($appointmentRequest);
+        return $this->getSingleResult($appointmentRequest, $queryParameters);
     }
 
     public function getWorksOrders(array $queryParameters = []): ?array
     {
         $worksOrdersRequest = new GetWorksOrdersRequest;
 
-        foreach ($queryParameters as $key => $value) {
-            $worksOrdersRequest->query()->add($key, $value);
-        }
-
-        return $this->getPaginatedResults($worksOrdersRequest);
+        return $this->getPaginatedResults($worksOrdersRequest, $queryParameters);
     }
 
     public function getWorksOrder(string $worksOrderRpsId, array $queryParameters = []): ?array
     {
         $getWorksOrderRequest = new GetWorksOrderRequest($worksOrderRpsId);
 
-        foreach ($queryParameters as $key => $value) {
-            $getWorksOrderRequest->query()->add($key, $value);
-        }
-
-        return $this->getSingleResult($getWorksOrderRequest);
+        return $this->getSingleResult($getWorksOrderRequest, $queryParameters);
     }
 
     public function getWorksOrderTypes(): ?array
@@ -678,198 +610,126 @@ class FoundationsService
     {
         $offersRequest = new GetOffersRequest;
 
-        foreach ($queryParameters as $key => $value) {
-            $offersRequest->query()->add($key, $value);
-        }
-
-        return $this->getPaginatedResults($offersRequest);
+        return $this->getPaginatedResults($offersRequest, $queryParameters);
     }
 
     public function getSalesProgress(string $offerId, array $queryParameters = []): ?array
     {
         $salesProgressRequest = new GetConveyancingRequest($offerId);
 
-        foreach ($queryParameters as $key => $value) {
-            $salesProgressRequest->query()->add($key, $value);
-        }
-
-        return $this->getSingleResult($salesProgressRequest);
+        return $this->getSingleResult($salesProgressRequest, $queryParameters);
     }
 
     public function getArea(string $areaId, array $queryParameters = []): ?array
     {
         $areaRequest = new GetAreaRequest($areaId);
 
-        foreach ($queryParameters as $key => $value) {
-            $areaRequest->query()->add($key, $value);
-        }
-
-        return $this->getSingleResult($areaRequest);
+        return $this->getSingleResult($areaRequest, $queryParameters);
     }
 
     public function getNegotiator(string $negotiatorId, array $queryParameters = []): ?array
     {
         $negotiatorRequest = new GetNegotiatorRequest($negotiatorId);
 
-        foreach ($queryParameters as $key => $value) {
-            $negotiatorRequest->query()->add($key, $value);
-        }
-
-        return $this->getSingleResult($negotiatorRequest);
+        return $this->getSingleResult($negotiatorRequest, $queryParameters);
     }
 
     public function getNegotiators(array $queryParameters = [])
     {
         $negotiatorsRequest = new GetNegotiatorsRequest;
 
-        foreach ($queryParameters as $key => $value) {
-            $negotiatorsRequest->query()->add($key, $value);
-        }
-
-        return $this->getPaginatedResults($negotiatorsRequest);
+        return $this->getPaginatedResults($negotiatorsRequest, $queryParameters);
     }
 
     public function getOffice(string $officeRpsId, array $queryParameters = []): ?array
     {
         $getOfficeRequest = new GetOfficeRequest($officeRpsId);
 
-        foreach ($queryParameters as $key => $value) {
-            $getOfficeRequest->query()->add($key, $value);
-        }
-
-        return $this->getSingleResult($getOfficeRequest);
+        return $this->getSingleResult($getOfficeRequest, $queryParameters);
     }
 
     public function getOffices(array $queryParameters = []): ?array
     {
         $officesRequest = new GetOfficesRequest();
 
-        foreach ($queryParameters as $key => $value) {
-            $officesRequest->query()->add($key, $value);
-        }
-
-        return $this->getPaginatedResults($officesRequest);
+        return $this->getPaginatedResults($officesRequest, $queryParameters);
     }
 
     public function getApplicants(array $queryParameters = []): ?array
     {
         $applicantsRequest = new GetApplicantsRequest();
 
-        foreach ($queryParameters as $key => $value) {
-            $applicantsRequest->query()->add($key, $value);
-        }
-
-        return $this->getPaginatedResults($applicantsRequest);
+        return $this->getPaginatedResults($applicantsRequest, $queryParameters);
     }
 
     public function getApplicant(string $applicantId, array $queryParameters = []): ?array
     {
         $applicantRequest = new GetApplicantRequest($applicantId);
 
-        foreach ($queryParameters as $key => $value) {
-            $applicantRequest->query()->add($key, $value);
-        }
-
-        return $this->getSingleResult($applicantRequest);
+        return $this->getSingleResult($applicantRequest, $queryParameters);
     }
 
     public function getTransactions(array $queryParameters = []): ?array
     {
         $transactionsRequest = new GetTransactionsRequest;
 
-        foreach ($queryParameters as $key => $value) {
-            $transactionsRequest->query()->add($key, $value);
-        }
-
-        return $this->getPaginatedResults($transactionsRequest);
+        return $this->getPaginatedResults($transactionsRequest, $queryParameters);
     }
 
     public function getTenancies(array $queryParameters = []): ?array
     {
         $tenanciesRequest = new GetTenanciesRequest();
 
-        foreach ($queryParameters as $key => $value) {
-            $tenanciesRequest->query()->add($key, $value);
-        }
-
-        return $this->getPaginatedResults($tenanciesRequest);
+        return $this->getPaginatedResults($tenanciesRequest, $queryParameters);
     }
 
     public function getTenancy(string $tenancyRpsId, array $queryParameters = []): ?array
     {
         $tenancyRequest = new GetTenancyRequest($tenancyRpsId);
 
-        foreach ($queryParameters as $key => $value) {
-            $tenancyRequest->query()->add($key, $value);
-        }
-
-        return $this->getSingleResult($tenancyRequest);
+        return $this->getSingleResult($tenancyRequest, $queryParameters);
     }
 
     public function getTenancyChecks(string $tenancyId, array $queryParameters = []): ?array
     {
         $tenancyChecksRequest = new GetTenancyChecksRequest($tenancyId);
 
-        foreach ($queryParameters as $key => $value) {
-            $tenancyChecksRequest->query()->add($key, $value);
-        }
-
-        return $this->getPaginatedResults($tenancyChecksRequest);
+        return $this->getPaginatedResults($tenancyChecksRequest, $queryParameters);
     }
 
     public function getVendors(array $queryParameters = []): ?array
     {
         $vendorsRequest = new GetVendorsRequest();
 
-        foreach ($queryParameters as $key => $value) {
-            $vendorsRequest->query()->add($key, $value);
-        }
-
-        return $this->getPaginatedResults($vendorsRequest);
+        return $this->getPaginatedResults($vendorsRequest, $queryParameters);
     }
 
     public function getVendor(string $ownerRpsId, array $queryParameters = []): ?array
     {
         $vendorRequest = new GetVendorRequest($ownerRpsId);
 
-        foreach ($queryParameters as $key => $value) {
-            $vendorRequest->query()->add($key, $value);
-        }
-
-        return $this->getSingleResult($vendorRequest);
+        return $this->getSingleResult($vendorRequest, $queryParameters);
     }
 
     public function getLandlords(array $queryParameters = []): ?array
     {
         $landlordsRequest = new GetLandlordsRequest();
 
-        foreach ($queryParameters as $key => $value) {
-            $landlordsRequest->query()->add($key, $value);
-        }
-
-        return $this->getPaginatedResults($landlordsRequest);
+        return $this->getPaginatedResults($landlordsRequest, $queryParameters);
     }
 
     public function getLandlord(string $ownerRpsId, array $queryParameters = []): ?array
     {
         $landlordRequest = new GetLandlordRequest($ownerRpsId);
 
-        foreach ($queryParameters as $key => $value) {
-            $landlordRequest->query()->add($key, $value);
-        }
-
-        return $this->getSingleResult($landlordRequest);
+        return $this->getSingleResult($landlordRequest, $queryParameters);
     }
 
     public function getPropertyImages(array $queryParameters = []): ?array
     {
         $propertyImagesRequest = new GetPropertyImages();
 
-        foreach ($queryParameters as $key => $value) {
-            $propertyImagesRequest->query()->add($key, $value);
-        }
-
-        return $this->getPaginatedResults($propertyImagesRequest);
+        return $this->getPaginatedResults($propertyImagesRequest, $queryParameters);
     }
 
     public function doesContactConsentToMarketing(string $contactRpsId): bool
@@ -933,8 +793,10 @@ class FoundationsService
         // stub
     }
 
-    protected function getSingleResult(Request $request): ?array
+    protected function getSingleResult(Request $request, array $queryParameters = []): ?array
     {
+        $this->applyQueryParameters($request, $queryParameters);
+
         $response = $this->connector->send($request);
 
         if (! $response->successful()) {
@@ -949,8 +811,10 @@ class FoundationsService
     }
 
     /** @return ?array<array<string,string|array<string>>> $results */
-    protected function getPaginatedResults(Request $request): ?array
+    protected function getPaginatedResults(Request $request, array $queryParameters = []): ?array
     {
+        $this->applyQueryParameters($request, $queryParameters);
+
         $results = null;
 
         try {
@@ -975,6 +839,13 @@ class FoundationsService
         }
 
         return $results;
+    }
+
+    private function applyQueryParameters(Request $request, array $queryParameters): void
+    {
+        foreach ($queryParameters as $key => $value) {
+            $request->query()->add($key, $value);
+        }
     }
 
 
