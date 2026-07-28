@@ -1040,7 +1040,7 @@ class FoundationsService
         // stub
     }
 
-    private function getSingleResult(Request $request): ?array
+    protected function getSingleResult(Request $request): ?array
     {
         $response = $this->connector->send($request);
 
@@ -1056,7 +1056,7 @@ class FoundationsService
     }
 
     /** @return ?array<array<string,string|array<string>>> $results */
-    private function getPaginatedResults(Request $request): ?array
+    protected function getPaginatedResults(Request $request): ?array
     {
         $results = null;
 
